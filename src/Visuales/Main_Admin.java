@@ -23,7 +23,14 @@ public class Main_Admin extends JFrame {
         JButton btnTorres = crearBotonConIcono("Torres", "/Imgs/torre.png");
         JButton btnInmuebles = crearBotonConIcono("Inmuebles", "/Imgs/apartamento.png");
         JButton btnRegistrarProyecto = crearBotonConIcono("Nuevo Proyecto", "/Imgs/agregarProyecto.png");
-
+        btnRegistrarProyecto.addActionListener(new ActionListener() {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+              Main_Asesor mainAsesor = new Main_Asesor();
+              mainAsesor.setTitle("Administrador");
+              mainAsesor.setVisible(true);
+            }
+        });
         // Añadir botones al menú
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20)));
         panelMenu.add(btnProyectos);
