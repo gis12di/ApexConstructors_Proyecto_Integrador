@@ -40,7 +40,6 @@ public class Main_Admin extends JFrame {
 
         // Panel de Proyectos
         JPanel panelProyectos = new JPanel();
-        panelProyectos.setLayout(new BorderLayout());
         panelProyectos.setBackground(Color.WHITE);
         panelProyectos.add(new JLabel("Contenido de Proyectos"));
 
@@ -49,14 +48,14 @@ public class Main_Admin extends JFrame {
         panelTorres.setBackground(Color.WHITE);
         panelTorres.add(new JLabel("Contenido de Torres"));
 
-        JPanel panelApartamentosContent = new JPanel();
-        panelApartamentosContent.setBackground(Color.WHITE);
-        panelApartamentosContent.add(new JLabel("Contenido de Inmuebles"));
+        JPanel panelInmueblesContent = new JPanel();
+        panelInmueblesContent.setBackground(Color.WHITE);
+        panelInmueblesContent.add(new JLabel("Contenido de Inmuebles"));
 
         // Añadir los paneles al contenido
         panelContenido.add(panelProyectos, "Proyectos");
         panelContenido.add(panelTorres, "Torres");
-        panelContenido.add(panelApartamentosContent, "Inmuebles");
+        panelContenido.add(panelInmueblesContent, "Inmuebles");
 
         // Acciones de los botones
         btnProyectos.addActionListener(e -> cardLayout.show(panelContenido, "Proyectos"));
