@@ -1,8 +1,8 @@
-
 import java.awt.*;
 import javax.swing.*;
 
 public class Login extends JFrame {
+
     private JPanel loginPanel;
     private JTextField userField;
     private JPasswordField passField;
@@ -79,12 +79,10 @@ public class Login extends JFrame {
         loginButton.setContentAreaFilled(false);
         loginButton.setOpaque(false);
         loginButton.setBorderPainted(false);
-        loginButton.addActionListener(e -> {
-            Main_Admin mainAdmin = new Main_Admin();
-            mainAdmin.setTitle("Administrador");
-            mainAdmin.setVisible(true);
-            this.dispose(); // Cierra la ventana de login
-        });
+
+        // Configurar el controlador para el botón de login
+        LoginController loginController = new LoginController(userField, passField, this);
+        loginButton.addActionListener(loginController);
         loginPanel.add(loginButton);
     }
 
