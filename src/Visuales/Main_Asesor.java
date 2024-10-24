@@ -30,6 +30,9 @@ public class Main_Asesor extends javax.swing.JFrame {
         btnRegistrarPago.addActionListener(new ActionListener() {
         @Override
             public void actionPerformed(ActionEvent e) {
+              Main_Admin mainAdmin = new Main_Admin();
+              mainAdmin.setTitle("Administrador");
+              mainAdmin.setVisible(true);
             }
         });
         

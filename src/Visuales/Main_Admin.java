@@ -27,7 +27,7 @@ public class Main_Admin extends JFrame {
         @Override
             public void actionPerformed(ActionEvent e) {
               Main_Asesor mainAsesor = new Main_Asesor();
-              mainAsesor.setTitle("Administrador");
+              mainAsesor.setTitle("Asesor");
               mainAsesor.setVisible(true);
             }
         });
