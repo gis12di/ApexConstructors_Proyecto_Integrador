@@ -1,3 +1,4 @@
+import Logica.Torre.Torre;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
