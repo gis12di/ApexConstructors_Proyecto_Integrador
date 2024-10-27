@@ -1,73 +1,54 @@
+// Main_Admin.java
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class Main_Admin extends JFrame {
+
     private JPanel panelMenu;
     private JPanel panelContenido;
     private CardLayout cardLayout;
     private JTable table;
+    private AdminController adminController;
 
     public Main_Admin() {
+        adminController = new AdminController(this); // Crear el controlador
+
         // Configuración del frame principal
         panelMenu = new JPanel();
-        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS)); // Apila los componentes verticalmente
-        panelMenu.setPreferredSize(new Dimension(175, getHeight())); // Ajusta el ancho del menú
-        panelMenu.setBackground(Color.WHITE); // Fondo blanco para el menú
+        panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
+        panelMenu.setPreferredSize(new Dimension(175, getHeight()));
+        panelMenu.setBackground(Color.WHITE);
         panelMenu.setBorder(BorderFactory.createLineBorder(new Color(204, 204, 204)));
 
         // Botones del menú
         JButton btnProyectos = crearBotonConIcono("Proyectos", "/Imgs/proyecto.png");
-        JButton btnTorres = crearBotonConIcono("Torres", "/Imgs/torre.png");
-        JButton btnInmuebles = crearBotonConIcono("Inmuebles", "/Imgs/apartamento.png");
         JButton btnRegistrarProyecto = crearBotonConIcono("Nuevo Proyecto", "/Imgs/agregarProyecto.png");
-        btnRegistrarProyecto.addActionListener(new ActionListener() {
-        @Override
-            public void actionPerformed(ActionEvent e) {
-              Main_Asesor mainAsesor = new Main_Asesor();
-              mainAsesor.setTitle("Asesor");
-              mainAsesor.setVisible(true);
-            }
-        });
+
+        // Acción del botón "Nuevo Proyecto"
+        btnRegistrarProyecto.addActionListener(adminController.getActionNuevoProyecto());
+
         // Añadir botones al menú
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20)));
         panelMenu.add(btnProyectos);
-        panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
-        panelMenu.add(btnTorres);
-        panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
-        panelMenu.add(btnInmuebles);
         panelMenu.add(Box.createVerticalGlue());
         panelMenu.add(btnRegistrarProyecto);
 
-        // Panel de contenido
+        // Panel de contenido con CardLayout
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
 
         // Panel de Proyectos
         JPanel panelProyectos = new JPanel();
-        panelProyectos.setBackground(Color.WHITE);
-        panelProyectos.add(new JLabel("Contenido de Proyectos"));
+        panelProyectos.setLayout(new BorderLayout());
+        tablaProyecto(panelProyectos);
 
-        // Otros paneles (Torres, Apartamentos)
-        JPanel panelTorres = new JPanel();
-        panelTorres.setBackground(Color.WHITE);
-        panelTorres.add(new JLabel("Contenido de Torres"));
-
-        JPanel panelInmueblesContent = new JPanel();
-        panelInmueblesContent.setBackground(Color.WHITE);
-        panelInmueblesContent.add(new JLabel("Contenido de Inmuebles"));
-
-        // Añadir los paneles al contenido
+        // Añadir el panel de proyectos al CardLayout
         panelContenido.add(panelProyectos, "Proyectos");
-        panelContenido.add(panelTorres, "Torres");
-        panelContenido.add(panelInmueblesContent, "Inmuebles");
 
-        // Acciones de los botones
+        // Acciones del botón
         btnProyectos.addActionListener(e -> cardLayout.show(panelContenido, "Proyectos"));
-        btnTorres.addActionListener(e -> cardLayout.show(panelContenido, "Torres"));
-        btnInmuebles.addActionListener(e -> cardLayout.show(panelContenido, "Inmuebles"));
 
         // Añadir el menú y el contenido al frame
         setLayout(new BorderLayout());
@@ -85,6 +66,44 @@ public class Main_Admin extends JFrame {
         setVisible(true);
     }
 
+    // Implementación del método actualizarTablaProyectos
+    public void actualizarTablaProyectos() {
+        // Obtener el modelo de la tabla
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        tableModel.setRowCount(0); // Limpiar los datos actuales de la tabla
+
+        // Llamar al controlador para actualizar los datos
+        adminController.actualizarTablaProyectos(tableModel);
+
+        // Refrescar la tabla
+        table.revalidate();
+        table.repaint();
+    }
+
+    // Configura la tabla de proyectos
+    public void tablaProyecto(JPanel panel) {
+        String[] columnNames = {"Codigo", "Nombre"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table = new JTable(tableModel);
+        table.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        // Configura el doble clic en la tabla
+        adminController.configurarDobleClicTabla(table);
+
+        // Actualiza los datos de la tabla
+        adminController.actualizarTablaProyectos(tableModel);
+
+        panel.removeAll();
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
+    }
 
     // Método para crear un botón con ícono
     private JButton crearBotonConIcono(String texto, String rutaIcono) {
@@ -95,38 +114,17 @@ public class Main_Admin extends JFrame {
         ImageIcon iconoRedimensionado = new ImageIcon(imagenRedimensionada);
 
         boton.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(5, 5, 5, 5);
-
         boton.setMaximumSize(new Dimension(180, 40));
         boton.setPreferredSize(new Dimension(180, 40));
-
         boton.setIcon(iconoRedimensionado);
         boton.setFocusPainted(false);
         boton.setBackground(Color.WHITE);
         boton.setBorder(new EmptyBorder(5, 5, 5, 5));
-        boton.setBorderPainted(false);
         boton.setOpaque(true);
-
-        boton.setHorizontalTextPosition(SwingConstants.RIGHT);
-        boton.setVerticalTextPosition(SwingConstants.CENTER);
-        boton.setIconTextGap(10);
-
-        boton.getModel().addChangeListener(e -> {
-            ButtonModel model = boton.getModel();
-            if (model.isPressed()) {
-                boton.setBackground(Color.LIGHT_GRAY);
-            } else {
-                boton.setBackground(Color.WHITE);
-            }
-        });
-
         return boton;
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Main_Admin());
+        SwingUtilities.invokeLater(Main_Admin::new);
     }
 }
-
