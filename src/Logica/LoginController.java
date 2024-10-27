@@ -1,7 +1,5 @@
+import Logica.Usuarios.Autenticacion;
 
-import Logica.Autenticacion;
-import Logica.Conexion;
-        
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

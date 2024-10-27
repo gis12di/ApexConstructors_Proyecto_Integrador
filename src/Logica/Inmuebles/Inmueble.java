@@ -1,27 +1,60 @@
+package Logica.Inmuebles;
+
 public class Inmueble {
-    private int id;
-    private int numInmueble;
+    private String id;
+    private String numInmueble;
     private String tipoUnidad;
     private double valorInmueble;
     private double area;
-    private int codTorre;
+    private String codTorre;
 
-    // Getters y setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Getters y Setters
 
-    public int getNumInmueble() { return numInmueble; }
-    public void setNumInmueble(int numInmueble) { this.numInmueble = numInmueble; }
+    public String getId() {
+        return id;
+    }
 
-    public String getTipoUnidad() { return tipoUnidad; }
-    public void setTipoUnidad(String tipoUnidad) { this.tipoUnidad = tipoUnidad; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public double getValorInmueble() { return valorInmueble; }
-    public void setValorInmueble(double valorInmueble) { this.valorInmueble = valorInmueble; }
+    public String getNumInmueble() {
+        return numInmueble;
+    }
 
-    public double getArea() { return area; }
-    public void setArea(double area) { this.area = area; }
+    public void setNumInmueble(String numInmueble) {
+        this.numInmueble = numInmueble;
+    }
 
-    public int getCodTorre() { return codTorre; }
-    public void setCodTorre(int codTorre) { this.codTorre = codTorre; }
+    public String getTipoUnidad() {
+        return tipoUnidad;
+    }
+
+    public void setTipoUnidad(String tipoUnidad) {
+        this.tipoUnidad = tipoUnidad;
+    }
+
+    public double getValorInmueble() {
+        return valorInmueble;
+    }
+
+    public void setValorInmueble(double valorInmueble) {
+        this.valorInmueble = valorInmueble;
+    }
+
+    public double getArea() {
+        return area;
+    }
+
+    public void setArea(double area) {
+        this.area = area;
+    }
+
+    public String getCodTorre() {
+        return codTorre;
+    }
+
+    public void setCodTorre(String codTorre) {
+        this.codTorre = codTorre;
+    }
 }

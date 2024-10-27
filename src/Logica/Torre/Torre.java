@@ -1,3 +1,5 @@
+package Logica.Torre;
+
 public class Torre {
     private String id;
     private String numTorre;

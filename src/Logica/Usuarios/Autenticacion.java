@@ -1,21 +1,23 @@
-package Logica;
+package Logica.Usuarios;
 
 public class Autenticacion {
-    private ObtenerUsuario obtenerUsuario;
+    private GestionUsuarios gestionUsuarios;
 
     public Autenticacion() {
-        obtenerUsuario = new ObtenerUsuario();
+        // Inicializa la instancia de GestionUsuarios
+        gestionUsuarios = new GestionUsuarios();
     }
 
     // Método para verificar si las credenciales son válidas
     public boolean verificarCredenciales(String usuario, String contrasena) {
-        // Llama a UsuarioDAO para obtener el rol del usuario
-        String rol = obtenerUsuario.obtenerRolUsuario(usuario, contrasena);
+        // Llama a GestionUsuarios para validar el rol del usuario
+        String rol = gestionUsuarios.validarRolUsuario(usuario, contrasena);
         return rol != null; // Si el rol no es nulo, las credenciales son correctas
     }
 
     // Método para obtener el rol del usuario
     public String obtenerRol(String usuario, String contrasena) {
-        return obtenerUsuario.obtenerRolUsuario(usuario, contrasena);
+        // Llama a GestionUsuarios para obtener el rol del usuario
+        return gestionUsuarios.validarRolUsuario(usuario, contrasena);
     }
 }

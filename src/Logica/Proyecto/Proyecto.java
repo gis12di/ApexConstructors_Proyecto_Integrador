@@ -1,4 +1,4 @@
-package Logica.Proyectos;
+package Logica.Proyecto;
 
 public class Proyecto {
     private int codigo;
