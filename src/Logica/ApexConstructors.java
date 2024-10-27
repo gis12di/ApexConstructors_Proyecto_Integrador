@@ -1,5 +1,4 @@
 import javax.swing.SwingUtilities;
-//Main
 
 public class ApexConstructors {
 
