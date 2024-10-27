@@ -62,6 +62,13 @@ public class GestionProyectos {
         try {
             conn = Conexion.getConnection();
             if (conn != null) {
+                // Ejecutar NEXTVAL para inicializar la secuencia en la sesión
+                String initSeqQuery = "SELECT seq_codProyecto.NEXTVAL FROM dual";
+                PreparedStatement initStmt = conn.prepareStatement(initSeqQuery);
+                initStmt.executeQuery(); // Ejecuta y descarta el resultado
+                initStmt.close();
+
+                // Ahora podemos obtener CURRVAL
                 String query = "SELECT seq_codProyecto.CURRVAL AS codigo FROM dual";
                 PreparedStatement stmtCodigo = conn.prepareStatement(query);
                 ResultSet rs = stmtCodigo.executeQuery();
@@ -86,6 +93,7 @@ public class GestionProyectos {
         }
         return codigoProyecto;
     }
+
 
     public boolean actualizarProyecto(String codigoProyecto, String nuevoNombre) {
         if (nuevoNombre == null || nuevoNombre.isEmpty()) {

@@ -20,16 +20,17 @@ public class AdminController {
             crearProyecto.setTitle("Crear Proyecto");
             crearProyecto.setVisible(true);
 
-            String codProyectoRecienCreado = "codigoDelNuevoProyecto"; // Código simulado para el proyecto
             crearProyecto.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                    CrearTorres crearTorres = new CrearTorres(codProyectoRecienCreado);
-                    crearTorres.setVisible(true);
+                    // Aquí se llama a actualizarTablaProyectos después de cerrar la ventana CrearProyecto
+                    DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+                    actualizarTablaProyectos(tableModel);                  
                 }
             });
         };
     }
+
 
     public void actualizarTablaProyectos(DefaultTableModel tableModel) {
         List<Proyecto> proyectos = gestionProyectos.obtenerProyectos();
@@ -71,4 +72,4 @@ public class AdminController {
             }
         });
     }
-}
+} 

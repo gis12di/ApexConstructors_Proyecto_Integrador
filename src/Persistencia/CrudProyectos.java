@@ -107,28 +107,49 @@ public class CrudProyectos {
     // Método para eliminar un proyecto
     public boolean eliminarProyecto(String codigoProyecto) {
         Connection conn = null;
-        PreparedStatement stmt = null;
+        PreparedStatement stmtDeleteTorres = null;
+        PreparedStatement stmtDeleteProyecto = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "DELETE FROM proyecto WHERE codigo = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, Integer.parseInt(codigoProyecto));
-            int rowsDeleted = stmt.executeUpdate();
+            conn.setAutoCommit(false);  // Iniciar una transacción
+
+            // Eliminar registros dependientes en la tabla `torres` primero
+            String deleteTorresSQL = "DELETE FROM torre WHERE codproyecto = ?";
+            stmtDeleteTorres = conn.prepareStatement(deleteTorresSQL);
+            stmtDeleteTorres.setInt(1, Integer.parseInt(codigoProyecto));
+            stmtDeleteTorres.executeUpdate();
+
+            // Ahora eliminar el proyecto
+            String deleteProyectoSQL = "DELETE FROM proyecto WHERE codigo = ?";
+            stmtDeleteProyecto = conn.prepareStatement(deleteProyectoSQL);
+            stmtDeleteProyecto.setInt(1, Integer.parseInt(codigoProyecto));
+            int rowsDeleted = stmtDeleteProyecto.executeUpdate();
+
+            conn.commit();  // Confirmar la transacción
             return rowsDeleted > 0;
 
         } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();  // Revertir cambios en caso de error
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
             return false;
 
         } finally {
             // Cerrar los recursos
             try {
-                if (stmt != null) stmt.close();
+                if (stmtDeleteTorres != null) stmtDeleteTorres.close();
+                if (stmtDeleteProyecto != null) stmtDeleteProyecto.close();
                 if (conn != null) conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
 }

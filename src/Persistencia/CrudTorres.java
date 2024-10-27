@@ -1,6 +1,6 @@
+// CrudTorres.java
 package Persistencia;
 
-// CrudTorres.java
 import Logica.Torre.Torre;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,10 +11,9 @@ import java.util.List;
 
 public class CrudTorres {
     public void actualizar(Torre torre) {
-        Connection con = Conexion.getConnection();
-        String sql = "UPDATE torre SET numTorre = ?, numPisos = ?, codProyecto = ? WHERE id = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement stmt = con.prepareStatement("UPDATE torre SET numTorre = ?, numPisos = ?, codProyecto = ? WHERE id = ?")) {
+             
             stmt.setString(1, torre.getNumTorre());
             stmt.setString(2, torre.getNumPisos());
             stmt.setString(3, torre.getCodProyecto());
@@ -26,10 +25,9 @@ public class CrudTorres {
     }
 
     public void eliminar(int id) {
-        Connection con = Conexion.getConnection();
-        String sql = "DELETE FROM torre WHERE id = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement stmt = con.prepareStatement("DELETE FROM torre WHERE id = ?")) {
+             
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -38,25 +36,23 @@ public class CrudTorres {
     }
 
     public void guardar(Torre torre) {
-        Connection con = Conexion.getConnection();
-        String insertSql = "INSERT INTO torre (ID, numTorre, numPisos, codProyecto) VALUES (seq_idTorre.NEXTVAL, ?, ?, ?)";
-
-        try (PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
-            insertStmt.setString(1, torre.getNumTorre());
-            insertStmt.setString(2, torre.getNumPisos());
-            insertStmt.setString(3, torre.getCodProyecto());
-            insertStmt.executeUpdate();
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement stmt = con.prepareStatement("INSERT INTO torre (ID, numTorre, numPisos, codProyecto) VALUES (seq_idTorre.NEXTVAL, ?, ?, ?)")) {
+             
+            stmt.setString(1, torre.getNumTorre());
+            stmt.setString(2, torre.getNumPisos());
+            stmt.setString(3, torre.getCodProyecto());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public List<Torre> obtenerPorCodProyecto(String codProyecto) {
-        Connection con = Conexion.getConnection();
-        String sql = "SELECT * FROM torre WHERE codProyecto = ?";
         List<Torre> torres = new ArrayList<>();
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement stmt = con.prepareStatement("SELECT * FROM torre WHERE codProyecto = ?")) {
+             
             stmt.setString(1, codProyecto);
             ResultSet rs = stmt.executeQuery();
 
@@ -71,15 +67,13 @@ public class CrudTorres {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return torres;
     }
 
     public boolean existeCodProyecto(String codProyecto) {
-        Connection con = Conexion.getConnection();
-        String sql = "SELECT COUNT(*) FROM proyecto WHERE codigo = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.getConnection();
+             PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM proyecto WHERE codigo = ?")) {
+             
             stmt.setString(1, codProyecto);
             ResultSet rs = stmt.executeQuery();
 
@@ -89,7 +83,6 @@ public class CrudTorres {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return false;
     }
 }
