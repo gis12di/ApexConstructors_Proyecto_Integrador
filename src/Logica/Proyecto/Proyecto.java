@@ -1,8 +1,8 @@
 package Logica.Proyecto;
 
 public class Proyecto {
-    private int codigo;
-    private String nombre;
+    private int codigo;// Atributo que almacena el código del proyecto
+    private String nombre;// Atributo que almacena el nombre del proyecto
 
 
     // Getters y Setters

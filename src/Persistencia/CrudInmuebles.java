@@ -1,27 +1,26 @@
 
-
-import Logica.Inmuebles.Inmueble;
-import Persistencia.Conexion;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import Logica.Inmuebles.Inmueble; // Importa la clase Inmueble
+import Persistencia.Conexion; // Importa la clase Conexion para obtener conexiones a la base de datos
+import java.sql.Connection; // Importa la clase Connection para manejar la conexión a la base de datos
+import java.sql.PreparedStatement; // Importa la clase PreparedStatement para ejecutar comandos SQL precompilados
+import java.sql.ResultSet; // Importa la clase ResultSet para manejar los resultados de las consultas SQL
+import java.sql.SQLException; // Importa la clase SQLException para manejar excepciones SQL
+import java.util.ArrayList; // Importa la clase ArrayList para manejar listas dinámicas
+import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
 public class CrudInmuebles {
 
     // Método para guardar un inmueble en la base de datos
     public boolean guardar(Inmueble inmueble) {
-        Connection con = Conexion.getConnection();
+        Connection con = Conexion.getConnection();// Obtiene una conexión a la base de datos
         String checkSql = "SELECT COUNT(*) FROM torre WHERE ID = ?";
         String insertSql = "INSERT INTO Inmueble (id, numInmueble, tipoUnidad, valor, area, idTorre) VALUES (Seq_idInmueble.NextVal, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement checkStmt = con.prepareStatement(checkSql)) {
-            checkStmt.setString(1, inmueble.getCodTorre());
+            checkStmt.setString(1, inmueble.getCodTorre());// Establece el código de la torre en la consulta
             ResultSet rs = checkStmt.executeQuery();
             
-            if (rs.next() && rs.getInt(1) > 0) {
+            if (rs.next() && rs.getInt(1) > 0) {// Verifica si la torre existe
                 try (PreparedStatement stmt = con.prepareStatement(insertSql)) {
                     stmt.setString(1, inmueble.getNumInmueble());
                     stmt.setString(2, inmueble.getTipoUnidad());
@@ -29,7 +28,7 @@ public class CrudInmuebles {
                     stmt.setDouble(4, inmueble.getArea());
                     stmt.setString(5, inmueble.getCodTorre());
                     stmt.executeUpdate();
-                    return true;
+                    return true;// Retorna true si la inserción es exitosa
                 }
             }
         } catch (SQLException e) {
@@ -91,11 +90,11 @@ public class CrudInmuebles {
                 inmueble.setValorInmueble(rs.getDouble("valor"));
                 inmueble.setArea(rs.getDouble("area"));
                 inmueble.setCodTorre(rs.getString("idTorre"));
-                inmuebles.add(inmueble);
+                inmuebles.add(inmueble);// Agrega el inmueble a la lista
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return inmuebles;
+        return inmuebles;// Retorna la lista de inmuebles
     }
 }

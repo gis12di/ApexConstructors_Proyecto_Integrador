@@ -3,7 +3,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class EditarProyecto extends JFrame {
+public class EditarProyecto extends JFrame {//La clase EditarProyecto permite editar o eliminar un proyecto específico
     private final JTextField nombreField;
     private final JButton btnActualizar;
     private final JButton btnEliminar;
@@ -12,7 +12,7 @@ public class EditarProyecto extends JFrame {
     private final JTable table;
     private final GestionProyectos gestionProyectos;
 
-    public EditarProyecto(String idProyecto, String nombreProyecto, int row, JTable table) {
+    public EditarProyecto(String idProyecto, String nombreProyecto, int row, JTable table) {//Constructor que inicializa la ventana y sus componentes
         this.codigoProyecto = idProyecto;
         this.row = row;
         this.table = table;
@@ -49,7 +49,7 @@ public class EditarProyecto extends JFrame {
         gbc.gridy = 1;
         panel.add(btnEliminar, gbc);
 
-        btnActualizar.addActionListener(e -> {
+        btnActualizar.addActionListener(e -> {// Acción del botón Actualizar
             String nuevoNombre = nombreField.getText();
             if (!nuevoNombre.isEmpty()) {
                 if (gestionProyectos.actualizarProyecto(codigoProyecto, nuevoNombre)) {
@@ -64,7 +64,7 @@ public class EditarProyecto extends JFrame {
             }
         });
 
-        btnEliminar.addActionListener(e -> {
+        btnEliminar.addActionListener(e -> {// Acción del botón Eliminar
             int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este proyecto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 if (gestionProyectos.eliminarProyecto(codigoProyecto)) {
@@ -80,7 +80,7 @@ public class EditarProyecto extends JFrame {
         add(panel);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {//Método principal para probar la edición de proyectos.
         String[] columnNames = {"codigo", "Nombre"};
         DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 

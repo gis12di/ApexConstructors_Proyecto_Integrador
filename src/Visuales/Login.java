@@ -1,21 +1,21 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class Login extends JFrame {
+public class Login extends JFrame {//La clase Login representa la interfaz de usuario para acceder a la aplicación
 
     private JPanel loginPanel;
     private JTextField userField;
     private JPasswordField passField;
     private JButton loginButton;
 
-    public Login() {
+    public Login() {//Constructor que inicializa la ventana de login y sus componentes.
         setTitle("Login");
         setSize(650, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() {//Método que inicializa los componentes de la interfaz gráfica
         loginPanel = new JPanel();
         loginPanel.setLayout(null);
         loginPanel.setBackground(Color.WHITE);
@@ -27,11 +27,13 @@ public class Login extends JFrame {
         imageLabel.setBounds(130, 30, 400, 150);
         loginPanel.add(imageLabel);
 
+        // Etiqueta del título
         JLabel titleLabel = new JLabel("Accede a tu cuenta", SwingConstants.CENTER);
         titleLabel.setBounds(125, 180, 400, 40);
         titleLabel.setFont(new java.awt.Font("Segoe UI Semibold", 1, 30));
         loginPanel.add(titleLabel);
 
+        // Etiqueta y campo de texto para el usuario
         JLabel userLabel = new JLabel("Usuario");
         userLabel.setBounds(125, 250, 400, 30);
         userLabel.setFont(new java.awt.Font("Segoe UI", 0, 16));
@@ -46,6 +48,7 @@ public class Login extends JFrame {
         userSeparator.setBounds(125, 310, 400, 1);
         loginPanel.add(userSeparator);
 
+        // Etiqueta y campo de texto para la contraseña
         JLabel passLabel = new JLabel("Contraseña");
         passLabel.setBounds(125, 330, 400, 30);
         passLabel.setFont(new java.awt.Font("Segoe UI", 0, 16));
@@ -60,7 +63,7 @@ public class Login extends JFrame {
         passSeparator.setBounds(125, 390, 400, 1);
         loginPanel.add(passSeparator);
 
-        loginButton = new JButton("Acceder") {
+        loginButton = new JButton("Acceder") {// Botón para iniciar sesión con diseño personalizado
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -86,7 +89,7 @@ public class Login extends JFrame {
         loginPanel.add(loginButton);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {//Método principal para iniciar la aplicación
         SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
 }

@@ -1,16 +1,15 @@
-// CrudTorres.java
-package Persistencia;
+package Persistencia; // Define el paquete Persistencia
 
-import Logica.Torre.Torre;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import Logica.Torre.Torre; // Importa la clase Torre
+import java.sql.Connection; // Importa la clase Connection para manejar la conexión a la base de datos
+import java.sql.PreparedStatement; // Importa la clase PreparedStatement para ejecutar comandos SQL precompilados
+import java.sql.ResultSet; // Importa la clase ResultSet para manejar los resultados de las consultas SQL
+import java.sql.SQLException; // Importa la clase SQLException para manejar excepciones SQL
+import java.util.ArrayList; // Importa la clase ArrayList para manejar listas dinámicas
+import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
-public class CrudTorres {
-    public void actualizar(Torre torre) {
+public class CrudTorres {//La clase CrudTorres proporciona métodos para realizar operaciones CRUD en torres.
+    public void actualizar(Torre torre) {//Actualiza una torre en la base de datos.
         try (Connection con = Conexion.getConnection();
              PreparedStatement stmt = con.prepareStatement("UPDATE torre SET numTorre = ?, numPisos = ?, codProyecto = ? WHERE id = ?")) {
              
@@ -24,7 +23,7 @@ public class CrudTorres {
         }
     }
 
-    public void eliminar(int id) {
+    public void eliminar(int id) {//Elimina una torre de la base de datos.
         try (Connection con = Conexion.getConnection();
              PreparedStatement stmt = con.prepareStatement("DELETE FROM torre WHERE id = ?")) {
              
@@ -35,7 +34,7 @@ public class CrudTorres {
         }
     }
 
-    public void guardar(Torre torre) {
+    public void guardar(Torre torre) {//Guarda una nueva torre en la base de datos.
         try (Connection con = Conexion.getConnection();
              PreparedStatement stmt = con.prepareStatement("INSERT INTO torre (ID, numTorre, numPisos, codProyecto) VALUES (seq_idTorre.NEXTVAL, ?, ?, ?)")) {
              
@@ -48,7 +47,7 @@ public class CrudTorres {
         }
     }
 
-    public List<Torre> obtenerPorCodProyecto(String codProyecto) {
+    public List<Torre> obtenerPorCodProyecto(String codProyecto) {//Guarda una nueva torre en la base de datos.
         List<Torre> torres = new ArrayList<>();
         try (Connection con = Conexion.getConnection();
              PreparedStatement stmt = con.prepareStatement("SELECT * FROM torre WHERE codProyecto = ?")) {
@@ -70,7 +69,7 @@ public class CrudTorres {
         return torres;
     }
 
-    public boolean existeCodProyecto(String codProyecto) {
+    public boolean existeCodProyecto(String codProyecto) {//Verifica si un código de proyecto existe en la base de datos.
         try (Connection con = Conexion.getConnection();
              PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM proyecto WHERE codigo = ?")) {
              
@@ -83,6 +82,6 @@ public class CrudTorres {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return false;// Retorna false si el código del proyecto no existe
     }
 }

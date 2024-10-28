@@ -1,27 +1,27 @@
 
 // GestionTorres.java
-import Logica.Torre.Torre;
-import Persistencia.CrudTorres;
-import java.util.List;
+import Logica.Torre.Torre; // Importa la clase Torre
+import Persistencia.CrudTorres; // Importa la clase CrudTorres para realizar operaciones CRUD en las torres
+import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
 public class GestionTorres {
-    private CrudTorres crudTorres;
+    private CrudTorres crudTorres;// Instancia de CrudTorres para manejar operaciones CRUD
 
     public GestionTorres() {
-        this.crudTorres = new CrudTorres();
+        this.crudTorres = new CrudTorres();//Constructor que inicializa la instancia de CrudTorres.
     }
 
-    public void actualizarTorre(Torre torre) {
+    public void actualizarTorre(Torre torre) {// Actualiza una torre en la base de datos.
         crudTorres.actualizar(torre);
         System.out.println("Torre actualizada correctamente.");
     }
 
-    public void eliminarTorre(int id) {
+    public void eliminarTorre(int id) {//Elimina una torre de la base de datos.
         crudTorres.eliminar(id);
         System.out.println("Torre eliminada correctamente.");
     }
 
-    public void guardarTorre(Torre torre) {
+    public void guardarTorre(Torre torre) {//Guarda una nueva torre en la base de datos.
         if (crudTorres.existeCodProyecto(torre.getCodProyecto())) {
             crudTorres.guardar(torre);
             System.out.println("Torre guardada correctamente.");
@@ -30,7 +30,7 @@ public class GestionTorres {
         }
     }
 
-    public List<Torre> obtenerTorresPorCodProyecto(String codProyecto) {
+    public List<Torre> obtenerTorresPorCodProyecto(String codProyecto) {//Obtiene una lista de torres por código de proyecto.
         return crudTorres.obtenerPorCodProyecto(codProyecto);
     }
 }

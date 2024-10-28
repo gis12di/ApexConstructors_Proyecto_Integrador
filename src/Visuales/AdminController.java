@@ -1,20 +1,20 @@
-import Logica.Proyecto.Proyecto;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionListener;
-import java.util.List;
+import Logica.Proyecto.Proyecto; // Importa la clase Proyecto
+import javax.swing.*; // Importa las clases de javax.swing para la interfaz gráfica
+import javax.swing.table.DefaultTableModel; // Importa la clase DefaultTableModel para manejar el modelo de la tabla
+import java.awt.event.ActionListener; // Importa la clase ActionListener para manejar eventos de acción
+import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
-public class AdminController {
-    private final Main_Admin mainAdmin;
-    private final GestionProyectos gestionProyectos;
-    private JTable table;
+public class AdminController {//La clase AdminController gestiona las acciones de la interfaz de administración.
+    private final Main_Admin mainAdmin;// Instancia de la ventana principal de administración
+    private final GestionProyectos gestionProyectos;// Instancia de la clase GestionProyectos para manejar las operaciones de proyectos
+    private JTable table;// Tabla de proyectos
 
-    public AdminController(Main_Admin mainAdmin) {
+    public AdminController(Main_Admin mainAdmin) {//Constructor que inicializa las instancias de Main_Admin y GestionProyectos.
         this.mainAdmin = mainAdmin;
         this.gestionProyectos = new GestionProyectos();
     }
 
-    public ActionListener getActionNuevoProyecto() {
+    public ActionListener getActionNuevoProyecto() {//Obtiene el ActionListener para crear un nuevo proyecto
         return e -> {
             CrearProyecto crearProyecto = new CrearProyecto(mainAdmin);
             crearProyecto.setTitle("Crear Proyecto");
@@ -32,7 +32,7 @@ public class AdminController {
     }
 
 
-    public void actualizarTablaProyectos(DefaultTableModel tableModel) {
+    public void actualizarTablaProyectos(DefaultTableModel tableModel) {//Actualiza la tabla de proyectos con los datos más recientes
         List<Proyecto> proyectos = gestionProyectos.obtenerProyectos();
 
         tableModel.setRowCount(0); // Limpiar la tabla
@@ -42,12 +42,12 @@ public class AdminController {
         }
     }
 
-    public void abrirVentanaEdicion(String idProyecto, String nombreProyecto, int row) {
+    public void abrirVentanaEdicion(String idProyecto, String nombreProyecto, int row) {//Abre la ventana de edición para un proyecto específico
         EditarProyecto editarProyecto = new EditarProyecto(idProyecto, nombreProyecto, row, table);
         editarProyecto.setVisible(true);
     }
 
-    public void configurarDobleClicTabla(JTable table) {
+    public void configurarDobleClicTabla(JTable table) {//Configura el comportamiento del doble clic en la tabla de proyectos
         this.table = table;
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

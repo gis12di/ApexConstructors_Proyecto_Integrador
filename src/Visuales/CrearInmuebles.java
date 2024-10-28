@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CrearInmuebles extends JFrame {
+public class CrearInmuebles extends JFrame {//La clase CrearInmuebles permite crear inmuebles asociados a una torre específica
     private JComboBox<String> tipoUnidadCombo;
     private JTextField valor;
     private JTextField area;
@@ -13,7 +13,7 @@ public class CrearInmuebles extends JFrame {
     private int totalInmuebles;
     private GestionInmuebles gestionInmuebles;
 
-    public CrearInmuebles(String codTorre, int totalInmuebles) {
+    public CrearInmuebles(String codTorre, int totalInmuebles) {//Constructor que inicializa la ventana y sus componentes
         this.codTorre = codTorre;
         this.totalInmuebles = totalInmuebles;
         this.gestionInmuebles = new GestionInmuebles();

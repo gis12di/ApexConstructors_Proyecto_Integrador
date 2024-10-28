@@ -4,13 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CrearTorres extends JFrame {
+public class CrearTorres extends JFrame {//La clase CrearTorres permite crear torres asociadas a un proyecto específico
     private JTextField NumTorres;
     private JTextField NumPisos;
     private String codProyecto;
     private GestionTorres gestionTorres;
 
-    public CrearTorres(String codProyecto) {
+    public CrearTorres(String codProyecto) {//Constructor que inicializa la ventana y sus componentes
         this.codProyecto = codProyecto;
         this.gestionTorres = new GestionTorres();
 

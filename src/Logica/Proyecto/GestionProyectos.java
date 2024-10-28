@@ -1,38 +1,38 @@
 
-import Logica.Proyecto.Proyecto;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import Persistencia.Conexion;
-import Persistencia.CrudProyectos;
+import Logica.Proyecto.Proyecto; // Importa la clase Proyecto
+import java.sql.Connection; // Importa la clase Connection para manejar la conexión a la base de datos
+import java.sql.PreparedStatement; // Importa la clase PreparedStatement para ejecutar comandos SQL precompilados
+import java.sql.ResultSet; // Importa la clase ResultSet para manejar los resultados de las consultas SQL
+import java.sql.SQLException; // Importa la clase SQLException para manejar excepciones SQL
+import java.util.List; // Importa la clase List para manejar colecciones de objetos
+import javax.swing.JFrame; // Importa la clase JFrame para manejar ventanas de la interfaz gráfica de usuario
+import javax.swing.JOptionPane; // Importa la clase JOptionPane para mostrar cuadros de diálogo
+import Persistencia.Conexion; // Importa la clase Conexion para obtener conexiones a la base de datos
+import Persistencia.CrudProyectos; // Importa la clase CrudProyectos para realizar operaciones CRUD en los proyectos
 
 
 public class GestionProyectos {
-    private final CrudProyectos crudProyectos;
+    private final CrudProyectos crudProyectos;// Instancia de CrudProyectos para manejar operaciones CRUD
 
     public GestionProyectos() {
         this.crudProyectos = new CrudProyectos();
     }
 
-    public List<Proyecto> obtenerProyectos() {
+    public List<Proyecto> obtenerProyectos() {crudProyectos.obtenerProyectos(); // Obtiene la lista de proyectos desde la base de datos
         return crudProyectos.obtenerProyectos();
     }
 
     public boolean guardarProyecto(String nombreProyecto, JFrame frame) {
-        if (nombreProyecto == null || nombreProyecto.isEmpty()) {
+        if (nombreProyecto == null || nombreProyecto.isEmpty()) {// Verifica que el nombre del proyecto no esté vacío
             JOptionPane.showMessageDialog(frame, "El nombre del proyecto no puede estar vacío.");
             return false;
         }
 
-        Connection conn = null;
+        Connection conn = null;// Declara la variable de conexión
         try {
-            conn = Conexion.getConnection();
+            conn = Conexion.getConnection();// Obtiene una conexión a la base de datos
             if (conn != null) {
-                String sql = "INSERT INTO proyecto (codigo, nombre) VALUES (seq_codProyecto.NEXTVAL, ?)";
+                String sql = "INSERT INTO proyecto (codigo, nombre) VALUES (seq_codProyecto.NEXTVAL, ?)";// Inserta un nuevo proyecto en la base de datos
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 stmt.setString(1, nombreProyecto);
                 stmt.executeUpdate();
@@ -43,12 +43,12 @@ public class GestionProyectos {
                 return false;
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ex.printStackTrace();// Maneja excepciones SQL
             return false;
         } finally {
             if (conn != null) {
                 try {
-                    conn.close();
+                    conn.close();// Cierra la conexión
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -103,6 +103,6 @@ public class GestionProyectos {
     }
 
     public boolean eliminarProyecto(String codigoProyecto) {
-        return crudProyectos.eliminarProyecto(codigoProyecto);
+        return crudProyectos.eliminarProyecto(codigoProyecto);// Elimina el proyecto de la base de datos
     }
 }
