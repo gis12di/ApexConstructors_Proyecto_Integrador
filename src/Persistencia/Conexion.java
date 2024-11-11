@@ -6,8 +6,8 @@ import java.sql.SQLException; // Importa la clase SQLException para manejar exce
 
 public class Conexion {// La clase Conexion proporciona métodos para establecer una conexión con la base de datos Oracle.
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";  // Cambia si es necesario
-    private static final String USER = "apexconstructors";  // Reemplaza con usuario de Oracle
-    private static final String PASS = "apexconstructors";  // Reemplaza con contraseña de Oracle 
+    private static final String USER = "apexconstructors";  // Reemplaza con usuario de Oracle.
+    private static final String PASS = "apexconstructors";  // Reemplaza con contraseña de Oracle.
 
     public static Connection getConnection() {
         Connection conn = null;
