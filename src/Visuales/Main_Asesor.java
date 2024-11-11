@@ -164,7 +164,6 @@ public class Main_Asesor extends JFrame {
         List<Inmueble> inmuebles = gestionInmuebles.obtenerInmueblesPorTorre(torreId);
         textAreaInmuebles.setText("");
         for (Inmueble inmueble : inmuebles) {
-            textAreaInmuebles.append("Inmueble ID: " + inmueble.getId() + "\n");
             textAreaInmuebles.append("Número: " + inmueble.getNumInmueble() + "\n");
             textAreaInmuebles.append("Tipo de Unidad: " + inmueble.getTipoUnidad() + "\n");
             textAreaInmuebles.append("Valor: $" + inmueble.getValorInmueble() + "\n");
