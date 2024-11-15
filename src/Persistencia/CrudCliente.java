@@ -10,14 +10,17 @@ public class CrudCliente {
     public List<Cliente> obtenerClientes() {
         List<Cliente> clientes = new ArrayList<>();
         Connection conn = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         ResultSet rs = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "SELECT * FROM cliente";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
+            String sql = "{ ? = CALL obtenerCliente() }";
+            stmt = conn.prepareCall(sql);
+            stmt.registerOutParameter(1, Types.REF_CURSOR);
+            stmt.execute();
+
+            rs = (ResultSet) stmt.getObject(1);
 
             while (rs.next()) {
                 Cliente cliente = new Cliente();
@@ -48,12 +51,12 @@ public class CrudCliente {
 
     public boolean guardarCliente(Cliente cliente) {
         Connection conn = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "INSERT INTO cliente (numdocumento, nombre, apellido, direccion, telefono, email, subsidio_ministerio, sisben) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            stmt = conn.prepareStatement(sql);
+            String sql = "{ CALL insertarCliente(?, ?, ?, ?, ?, ?, ?, ?) }";
+            stmt = conn.prepareCall(sql);
             stmt.setString(1, cliente.getNumDocumento());
             stmt.setString(2, cliente.getNombre());
             stmt.setString(3, cliente.getApellido());
@@ -62,7 +65,7 @@ public class CrudCliente {
             stmt.setString(6, cliente.getEmail());
             stmt.setString(7, cliente.getSubsidioMinisterio());
             stmt.setString(8, cliente.getSisben());
-            stmt.executeUpdate();
+            stmt.execute();
             return true;
 
         } catch (SQLException e) {
@@ -81,20 +84,20 @@ public class CrudCliente {
 
     public boolean actualizarCliente(Cliente cliente) {
         Connection conn = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "UPDATE cliente SET nombre = ?, apellido = ?, direccion = ?, telefono = ?, email = ?, subsidio_ministerio = ?, sisben = ? WHERE numdocumento = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, cliente.getNombre());
-            stmt.setString(2, cliente.getApellido());
-            stmt.setString(3, cliente.getDireccion());
-            stmt.setString(4, cliente.getTelefono());
-            stmt.setString(5, cliente.getEmail());
-            stmt.setString(6, cliente.getSubsidioMinisterio());
-            stmt.setString(7, cliente.getSisben());
-            stmt.setString(8, cliente.getNumDocumento());
+            String sql = "{ CALL actualizarCliente(?, ?, ?, ?, ?, ?, ?, ?) }";
+            stmt = conn.prepareCall(sql);
+            stmt.setString(1, cliente.getNumDocumento());
+            stmt.setString(2, cliente.getNombre());
+            stmt.setString(3, cliente.getApellido());
+            stmt.setString(4, cliente.getDireccion());
+            stmt.setString(5, cliente.getTelefono());
+            stmt.setString(6, cliente.getEmail());
+            stmt.setString(7, cliente.getSubsidioMinisterio());
+            stmt.setString(8, cliente.getSisben());
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
 
@@ -114,12 +117,12 @@ public class CrudCliente {
 
     public boolean eliminarCliente(String numDocumento) {
         Connection conn = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "DELETE FROM cliente WHERE numdocumento = ?";
-            stmt = conn.prepareStatement(sql);
+            String sql = "{ CALL eliminarCliente(?) }";
+            stmt = conn.prepareCall(sql);
             stmt.setString(1, numDocumento);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted > 0;

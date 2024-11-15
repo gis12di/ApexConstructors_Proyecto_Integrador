@@ -1,67 +1,67 @@
-package Persistencia;
-
+import java.sql.*;
 import Logica.Proyecto.Proyecto;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import Persistencia.Conexion;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CrudProyectos {
-
-    // Método para obtener la lista de proyectos
+    
+    // Método para obtener todos los proyectos
     public List<Proyecto> obtenerProyectos() {
         List<Proyecto> proyectos = new ArrayList<>();
-        String sql = "SELECT * FROM proyecto";
-        
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        String sql = "{ CALL obtenerProyectos(?) }"; // Llama al procedimiento obtenerProyectos
 
-            // Procesar los resultados
-            while (rs.next()) {
-                int codigo = rs.getInt("codigo");
-                String nombre = rs.getString("nombre");
-                Proyecto proyecto = new Proyecto(codigo, nombre);
-                proyectos.add(proyecto);
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement stmt = conn.prepareCall(sql)) {
+
+            stmt.registerOutParameter(1, Types.REF_CURSOR); // Asigna el cursor de salida
+            stmt.exbloc
+                    ecute();
+
+            try (ResultSet rs = (ResultSet) stmt.getObject(1)) { // Itera sobre el ResultSet
+                while (rs.next()) {
+                    int codigo = rs.getInt("codigo");
+                    String nombre = rs.getString("nombre");
+                    Proyecto proyecto = new Proyecto(codigo, nombre);
+                    proyectos.add(proyecto); // Agrega cada proyecto a la lista
+                }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return proyectos;
+        return proyectos; // Devuelve la lista completa de proyectos
     }
 
     // Método para guardar un nuevo proyecto
     public boolean guardarProyecto(String nombreProyecto) {
-        String sql = "INSERT INTO proyecto (codigo, nombre) VALUES (seq_codProyecto.NEXTVAL, ?)";
-        
+        String sql = "{CALL insertarProyecto(?)}";
+
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setString(1, nombreProyecto);
-            int rowsInserted = stmt.executeUpdate();
-            return rowsInserted > 0;
+            stmt.execute();
+            return true;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
 
     // Método para actualizar un proyecto existente
     public boolean actualizarProyecto(String codigoProyecto, String nuevoNombre) {
-        String sql = "UPDATE proyecto SET nombre = ? WHERE codigo = ?";
-        
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "{ CALL actualizarProyecto(?, ?) }";
 
-            stmt.setString(1, nuevoNombre);
-            stmt.setString(2, codigoProyecto);
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement stmt = conn.prepareCall(sql)) {
+
+            stmt.setString(1, codigoProyecto);
+            stmt.setString(2, nuevoNombre);
+            stmt.execute();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,34 +71,38 @@ public class CrudProyectos {
 
     // Método para eliminar un proyecto
     public boolean eliminarProyecto(String codigoProyecto) {
-        String deleteTorresSQL = "DELETE FROM torre WHERE codproyecto = ?";
-        String deleteProyectoSQL = "DELETE FROM proyecto WHERE codigo = ?";
-        
+        String sql = "{ CALL eliminarProyecto(?) }";
+
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmtDeleteTorres = conn.prepareStatement(deleteTorresSQL);
-             PreparedStatement stmtDeleteProyecto = conn.prepareStatement(deleteProyectoSQL)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
-            conn.setAutoCommit(false);  // Iniciar transacción
-
-            // Eliminar registros dependientes en la tabla `torre`
-            stmtDeleteTorres.setString(1, codigoProyecto);
-            stmtDeleteTorres.executeUpdate();
-
-            // Eliminar el proyecto
-            stmtDeleteProyecto.setString(1, codigoProyecto);
-            int rowsDeleted = stmtDeleteProyecto.executeUpdate();
-
-            conn.commit();  // Confirmar transacción
-            return rowsDeleted > 0;
+            stmt.setString(1, codigoProyecto);
+            stmt.execute();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try (Connection conn = Conexion.getConnection()) {
-                if (conn != null) conn.rollback();  // Revertir cambios
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
             return false;
         }
+    }
+
+    // Método para obtener el código de un nuevo proyecto como String
+    public String obtenerCodigoProyecto() {
+        String codigoProyecto = null;
+        String sql = "{ ? = CALL obtenerCodigoProyecto() }";
+
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement stmt = conn.prepareCall(sql)) {
+
+            stmt.registerOutParameter(1, Types.VARCHAR); // Cambiado a VARCHAR para devolver como String
+            stmt.execute();
+
+            codigoProyecto = stmt.getString(1);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return codigoProyecto;
     }
 }
