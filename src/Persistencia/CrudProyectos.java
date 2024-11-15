@@ -15,8 +15,7 @@ public class CrudProyectos {
              CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.registerOutParameter(1, Types.REF_CURSOR); // Asigna el cursor de salida
-            stmt.exbloc
-                    ecute();
+            stmt.execute();
 
             try (ResultSet rs = (ResultSet) stmt.getObject(1)) { // Itera sobre el ResultSet
                 while (rs.next()) {
