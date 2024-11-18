@@ -10,6 +10,7 @@ public class Pago {
     private String cedCliente;
     private String cedAsesor;
     private String idVenta;
+    private String estadoPago;
 
     // Getters y Setters
     public String getIdPago() { return idPago; }
@@ -32,4 +33,7 @@ public class Pago {
 
     public String getIdVenta() { return idVenta; }
     public void setIdVenta(String idVenta) { this.idVenta = idVenta; }
+
+    public String getEstadoPago() { return estadoPago; }
+    public void setEstadoPago(String estadoPago) { this.estadoPago = estadoPago; }
 }

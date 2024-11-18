@@ -58,12 +58,12 @@ public class CrudInmuebles {
     }
 
     // Método para eliminar un inmueble
-    public boolean eliminar(int id) {
+    public boolean eliminar(String id) {
         Connection con = Conexion.getConnection();
         String sql = "DELETE FROM Inmueble WHERE id = ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setString(1, id);
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

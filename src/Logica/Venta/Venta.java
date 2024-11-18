@@ -11,6 +11,9 @@ public class Venta {
     private String idInmueble;
     private String numDocumentoCliente;
     private String cedAsesor;
+    private String numPago;
+    private double valorInicial;
+    private double excedente;
 
     // Getters y Setters
     public String getIdVenta() { return idVenta; }
@@ -36,4 +39,13 @@ public class Venta {
 
     public String getCedAsesor() { return cedAsesor; }
     public void setCedAsesor(String cedAsesor) { this.cedAsesor = cedAsesor; }
+
+    public String getNumPago() { return numPago; }
+    public void setNumPago(String numPago) { this.numPago = numPago; }
+
+    public double getValorInicial() { return valorInicial; }
+    public void setValorInicial(double valorInicial) { this.valorInicial = valorInicial; }
+
+    public double getExcedente() { return excedente; }
+    public void setExcedente(double excedente) { this.excedente = excedente; }
 }

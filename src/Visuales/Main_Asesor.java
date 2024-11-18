@@ -2,11 +2,13 @@ import Logica.Inmuebles.Inmueble;
 import Logica.Proyecto.Proyecto;
 import Logica.Torre.GestionTorres;
 import Logica.Torre.Torre;
+import Logica.Venta.Venta;
 import Persistencia.CrudTorres;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class Main_Asesor extends JFrame {
     private JPanel panelMenu;
@@ -36,15 +38,19 @@ public class Main_Asesor extends JFrame {
         JButton btnPagosRealizados = crearBotonConIcono("Pagos Realizados", "/Imgs/dolar.png");
         JButton btnPagosVencidos = crearBotonConIcono("Pagos Vencidos", "/Imgs/vencido.png");
         JButton btnRegistrarPago = crearBotonConIcono("Registrar Pago", "/Imgs/registrar_pago.png");
+        JButton btnVentas = crearBotonConIcono("Ventas", "/Imgs/ventas.png");
 
         btnInmuebles.addActionListener(e -> cardLayout.show(panelContenido, "Inmuebles"));
         btnPagosPendientes.addActionListener(e -> cardLayout.show(panelContenido, "PagosPendientes"));
         btnPagosRealizados.addActionListener(e -> cardLayout.show(panelContenido, "PagosRealizados"));
         btnPagosVencidos.addActionListener(e -> cardLayout.show(panelContenido, "PagosVencidos"));
         btnRegistrarPago.addActionListener(e -> JOptionPane.showMessageDialog(this, "Registrar Pago seleccionado"));
-
+        btnVentas.addActionListener(e -> cardLayout.show(panelContenido, "Ventas"));
+        
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20)));
         panelMenu.add(btnInmuebles);
+        panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        panelMenu.add(btnVentas);
         panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
         panelMenu.add(btnPagosPendientes);
         panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -53,7 +59,7 @@ public class Main_Asesor extends JFrame {
         panelMenu.add(btnPagosVencidos);
         panelMenu.add(Box.createVerticalGlue());
         panelMenu.add(btnRegistrarPago);
-
+        
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
 
@@ -69,11 +75,16 @@ public class Main_Asesor extends JFrame {
         JPanel panelPagosVencidos = new JPanel();
         panelPagosVencidos.setBackground(Color.WHITE);
         panelPagosVencidos.add(new JLabel("Contenido de Pagos Vencidos"));
-
+        
+        JPanel panelVentas = new JPanel();
+        panelVentas.setBackground(Color.WHITE);
+        panelVentas.add(new JLabel("Contenido de Ventas"));
+        
         panelContenido.add(panelInmuebles, "Inmuebles");
         panelContenido.add(panelPagosPendientes, "PagosPendientes");
         panelContenido.add(panelPagosRealizados, "PagosRealizados");
         panelContenido.add(panelPagosVencidos, "PagosVencidos");
+        panelContenido.add(panelVentas, "Ventas");
 
         setLayout(new BorderLayout());
         add(panelMenu, BorderLayout.WEST);
@@ -84,7 +95,7 @@ public class Main_Asesor extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
-
+    
     private JPanel crearPanelInmuebles() {
         JPanel panelInmuebles = new JPanel(new BorderLayout());
         panelInmuebles.setBackground(Color.WHITE);
@@ -201,6 +212,38 @@ public class Main_Asesor extends JFrame {
 
         return boton;
     }
+    
+    private JPanel crearPanelVentas() {
+        JPanel panelVentas = new JPanel(new BorderLayout());
+        panelVentas.setBackground(Color.WHITE);
+
+        JTable tablaVentas = new JTable();
+        JScrollPane scrollPane = new JScrollPane(tablaVentas);
+
+        cargarDatosVentas(tablaVentas);
+
+        panelVentas.add(scrollPane, BorderLayout.CENTER);
+
+        return panelVentas;
+    }
+
+    private void cargarDatosVentas(JTable tabla) {
+        String[] columnNames = {"ID Venta", "Precio Total", "Fecha Venta", "Matrícula", "Estado"};
+        GestionVentas gestionVentas = new GestionVentas();
+        List<Venta> ventas = gestionVentas.obtenerVentas();
+
+        Object[][] data = new Object[ventas.size()][columnNames.length];
+        for (int i = 0; i < ventas.size(); i++) {
+            Venta venta = ventas.get(i);
+            data[i][0] = venta.getIdVenta();
+            data[i][1] = venta.getPrecioTotal();
+            data[i][2] = venta.getFechaVenta();
+            data[i][3] = venta.getMatricula();
+        }
+
+        tabla.setModel(new DefaultTableModel(data, columnNames));
+    }
+
 
     public static void main(String[] args) {
         new Main_Asesor();

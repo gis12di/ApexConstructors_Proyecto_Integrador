@@ -77,28 +77,22 @@ public class CrudPago {
         }
     }
 
-    public boolean actualizarPago(Pago pago) {
+    public boolean actualizarEstadoPago(String idPago, String estado) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = Conexion.getConnection();
-            String sql = "UPDATE pago SET valorpago = ?, fechapago = ?, idinmueble = ?, cedCliente = ?, cedasesor = ?, idventa = ? WHERE idpago = ?";
+            String sql = "UPDATE pago SET estado_pago = ? WHERE idpago = ?";
             stmt = conn.prepareStatement(sql);
-            stmt.setDouble(1, pago.getValorPago());
-            stmt.setDate(2, new java.sql.Date(pago.getFechaPago().getTime()));
-            stmt.setString(3, pago.getIdInmueble());
-            stmt.setString(4, pago.getCedCliente());
-            stmt.setString(5, pago.getCedAsesor());
-            stmt.setString(6, pago.getIdVenta());
-            stmt.setString(7, pago.getIdPago());
+            stmt.setString(1, estado);
+            stmt.setString(2, idPago);
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-
         } finally {
             try {
                 if (stmt != null) stmt.close();
@@ -108,6 +102,7 @@ public class CrudPago {
             }
         }
     }
+
 
     public boolean eliminarPago(String idPago) {
         Connection conn = null;

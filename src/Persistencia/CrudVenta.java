@@ -7,17 +7,13 @@ import java.util.List;
 
 public class CrudVenta {
 
+    // Método para obtener todas las ventas
     public List<Venta> obtenerVentas() {
         List<Venta> ventas = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = Conexion.getConnection();
-            String sql = "SELECT * FROM venta";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
+        String sql = "SELECT * FROM venta";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Venta venta = new Venta();
@@ -29,31 +25,24 @@ public class CrudVenta {
                 venta.setIdInmueble(rs.getString("idinmueble"));
                 venta.setNumDocumentoCliente(rs.getString("numdocumento"));
                 venta.setCedAsesor(rs.getString("cedasesor"));
+                venta.setNumPago(rs.getString("num_pago"));
+                venta.setValorInicial(rs.getDouble("valor_inicial"));
+                venta.setExcedente(rs.getDouble("excedente"));
                 ventas.add(venta);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return ventas;
     }
 
+    // Método para guardar una nueva venta
     public boolean guardarVenta(Venta venta) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        String sql = "INSERT INTO venta (idventa, precio_total, fechaventa, matricula, fechaescritura, idinmueble, numdocumento, cedasesor, num_pago, valor_inicial, excedente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            conn = Conexion.getConnection();
-            String sql = "INSERT INTO venta (idventa, precio_total, fechaventa, matricula, fechaescritura, idinmueble, numdocumento, cedasesor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            stmt = conn.prepareStatement(sql);
             stmt.setString(1, venta.getIdVenta());
             stmt.setDouble(2, venta.getPrecioTotal());
             stmt.setDate(3, new java.sql.Date(venta.getFechaVenta().getTime()));
@@ -62,31 +51,24 @@ public class CrudVenta {
             stmt.setString(6, venta.getIdInmueble());
             stmt.setString(7, venta.getNumDocumentoCliente());
             stmt.setString(8, venta.getCedAsesor());
+            stmt.setString(9, venta.getNumPago());
+            stmt.setDouble(10, venta.getValorInicial());
+            stmt.setDouble(11, venta.getExcedente());
             stmt.executeUpdate();
             return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+    // Método para actualizar una venta existente
     public boolean actualizarVenta(Venta venta) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        String sql = "UPDATE venta SET precio_total = ?, fechaventa = ?, matricula = ?, fechaescritura = ?, idinmueble = ?, numdocumento = ?, cedasesor = ?, num_pago = ?, valor_inicial = ?, excedente = ? WHERE idventa = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            conn = Conexion.getConnection();
-            String sql = "UPDATE venta SET precio_total = ?, fechaventa = ?, matricula = ?, fechaescritura = ?, idinmueble = ?, numdocumento = ?, cedasesor = ? WHERE idventa = ?";
-            stmt = conn.prepareStatement(sql);
             stmt.setDouble(1, venta.getPrecioTotal());
             stmt.setDate(2, new java.sql.Date(venta.getFechaVenta().getTime()));
             stmt.setString(3, venta.getMatricula());
@@ -94,32 +76,26 @@ public class CrudVenta {
             stmt.setString(5, venta.getIdInmueble());
             stmt.setString(6, venta.getNumDocumentoCliente());
             stmt.setString(7, venta.getCedAsesor());
-            stmt.setString(8, venta.getIdVenta());
+            stmt.setString(8, venta.getNumPago());
+            stmt.setDouble(9, venta.getValorInicial());
+            stmt.setDouble(10, venta.getExcedente());
+            stmt.setString(11, venta.getIdVenta());
+            
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
+    // Método para eliminar una venta por su ID
     public boolean eliminarVenta(String idVenta) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+        String sql = "DELETE FROM venta WHERE idventa = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            conn = Conexion.getConnection();
-            String sql = "DELETE FROM venta WHERE idventa = ?";
-            stmt = conn.prepareStatement(sql);
             stmt.setString(1, idVenta);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted > 0;
@@ -127,14 +103,6 @@ public class CrudVenta {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
