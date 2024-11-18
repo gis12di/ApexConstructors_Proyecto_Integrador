@@ -12,7 +12,7 @@ public class CrudProyectos implements Cruds<Proyecto> {
     @Override
     public List<Proyecto> obtener(String criterio) {
         List<Proyecto> proyectos = new ArrayList<>();
-        String sql = "{ CALL obtenerProyectos(?) }"; // Procedimiento almacenado
+        String sql = "{ CALL obtenerProyectos(?) }"; // Llama al procedimiento obtenerProyectos
 
         try (Connection conn = Conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setString(1, criterio); // Asigna el criterio (puede ser un filtro, como el nombre del proyecto)

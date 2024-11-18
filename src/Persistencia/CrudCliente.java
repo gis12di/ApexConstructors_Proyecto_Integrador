@@ -34,8 +34,12 @@ public class CrudCliente implements Cruds<Cliente> {
 
         } finally {
             try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -68,8 +72,12 @@ public class CrudCliente implements Cruds<Cliente> {
 
         } finally {
             try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -83,7 +91,7 @@ public class CrudCliente implements Cruds<Cliente> {
 
         try {
             conn = Conexion.getConnection();
-            String sql= "DELETE FROM cliente WHERE numdocumento = ?";
+            String sql = "DELETE FROM cliente WHERE numdocumento = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, (String) numDocumento);
             int rowsDeleted = stmt.executeUpdate();
@@ -95,14 +103,18 @@ public class CrudCliente implements Cruds<Cliente> {
 
         } finally {
             try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
-    
+
     @Override
     public List<Cliente> obtener(String criterio) {
         List<Cliente> clientes = new ArrayList<>();
@@ -133,14 +145,20 @@ public class CrudCliente implements Cruds<Cliente> {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return clientes;
-    } 
+    }
 
 }
