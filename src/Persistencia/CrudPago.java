@@ -1,23 +1,21 @@
+// CrudPago.java
 package Persistencia;
 
+import Logica.Interfaz.Cruds;
 import Logica.Pago.Pago;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrudPago {
+public class CrudPago implements Cruds<Pago> {
 
-    public List<Pago> obtenerPagos() {
+    @Override
+    public List<Pago> obtener(String criterio) {
         List<Pago> pagos = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = Conexion.getConnection();
-            String sql = "SELECT * FROM pago";
-            stmt = conn.prepareStatement(sql);
-            rs = stmt.executeQuery();
+        String sql = "SELECT * FROM pago";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Pago pago = new Pago();
@@ -30,29 +28,18 @@ public class CrudPago {
                 pago.setIdVenta(rs.getString("idventa"));
                 pagos.add(pago);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return pagos;
     }
 
-    public boolean guardarPago(Pago pago) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+    @Override
+    public boolean guardar(Pago pago) {
+        String sql = "INSERT INTO pago (idpago, valorpago, fechapago, idinmueble, cedCliente, cedasesor, idventa) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            conn = Conexion.getConnection();
-            String sql = "INSERT INTO pago (idpago, valorpago, fechapago, idinmueble, cedCliente, cedasesor, idventa) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            stmt = conn.prepareStatement(sql);
             stmt.setString(1, pago.getIdPago());
             stmt.setDouble(2, pago.getValorPago());
             stmt.setDate(3, new java.sql.Date(pago.getFechaPago().getTime()));
@@ -62,71 +49,40 @@ public class CrudPago {
             stmt.setString(7, pago.getIdVenta());
             stmt.executeUpdate();
             return true;
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
-
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return false;
     }
 
-    public boolean actualizarEstadoPago(String idPago, String estado) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+    @Override
+    public boolean actualizar(Pago pago) {
+        String sql = "UPDATE pago SET estado_pago = ? WHERE idpago = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            conn = Conexion.getConnection();
-            String sql = "UPDATE pago SET estado_pago = ? WHERE idpago = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setString(1, estado);
-            stmt.setString(2, idPago);
+            stmt.setString(1, pago.getEstadoPago());
+            stmt.setString(2, pago.getIdPago());
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return false;
     }
 
+    @Override
+    public boolean eliminar(String idPago) {
+        String sql = "DELETE FROM pago WHERE idpago = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    public boolean eliminarPago(String idPago) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = Conexion.getConnection();
-            String sql = "DELETE FROM pago WHERE idpago = ?";
-            stmt = conn.prepareStatement(sql);
             stmt.setString(1, idPago);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
-
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return false;
     }
 }

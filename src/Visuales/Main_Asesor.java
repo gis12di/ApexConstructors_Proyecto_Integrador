@@ -2,13 +2,13 @@ import Logica.Inmuebles.Inmueble;
 import Logica.Proyecto.Proyecto;
 import Logica.Torre.GestionTorres;
 import Logica.Torre.Torre;
-import Logica.Venta.Venta;
 import Persistencia.CrudTorres;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 
 public class Main_Asesor extends JFrame {
     private JPanel panelMenu;
@@ -47,6 +47,7 @@ public class Main_Asesor extends JFrame {
         btnRegistrarPago.addActionListener(e -> JOptionPane.showMessageDialog(this, "Registrar Pago seleccionado"));
         btnVentas.addActionListener(e -> cardLayout.show(panelContenido, "Ventas"));
         
+
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20)));
         panelMenu.add(btnInmuebles);
         panelMenu.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -145,7 +146,8 @@ public class Main_Asesor extends JFrame {
     }
 
     private void cargarProyectos() {
-        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos();
+        // Pasa un criterio de búsqueda vacío y el JFrame actual
+        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos("", this);
         comboProyectos.removeAllItems();
         comboProyectos.addItem(new Proyecto(0, "Seleccionar Proyecto"));
         for (Proyecto proyecto : proyectos) {
@@ -153,12 +155,15 @@ public class Main_Asesor extends JFrame {
         }
     }
 
+
+
+
     public void cargarTorres(int codigoProyecto) {
         // Instancia de CrudTorres para acceder a los métodos de persistencia
         CrudTorres crudTorres = new CrudTorres();
 
         // Obtener las torres del proyecto seleccionado
-        List<Torre> torres = crudTorres.obtenerPorCodProyecto(String.valueOf(codigoProyecto));
+        List<Torre> torres = crudTorres.obtener(String.valueOf(codigoProyecto));
 
         // Limpiar el comboBox de torres antes de añadir nuevas
         comboTorres.removeAllItems();
@@ -175,6 +180,7 @@ public class Main_Asesor extends JFrame {
         List<Inmueble> inmuebles = gestionInmuebles.obtenerInmueblesPorTorre(torreId);
         textAreaInmuebles.setText("");
         for (Inmueble inmueble : inmuebles) {
+            textAreaInmuebles.append("Inmueble ID: " + inmueble.getId() + "\n");
             textAreaInmuebles.append("Número: " + inmueble.getNumInmueble() + "\n");
             textAreaInmuebles.append("Tipo de Unidad: " + inmueble.getTipoUnidad() + "\n");
             textAreaInmuebles.append("Valor: $" + inmueble.getValorInmueble() + "\n");
@@ -212,38 +218,6 @@ public class Main_Asesor extends JFrame {
 
         return boton;
     }
-    
-    private JPanel crearPanelVentas() {
-        JPanel panelVentas = new JPanel(new BorderLayout());
-        panelVentas.setBackground(Color.WHITE);
-
-        JTable tablaVentas = new JTable();
-        JScrollPane scrollPane = new JScrollPane(tablaVentas);
-
-        cargarDatosVentas(tablaVentas);
-
-        panelVentas.add(scrollPane, BorderLayout.CENTER);
-
-        return panelVentas;
-    }
-
-    private void cargarDatosVentas(JTable tabla) {
-        String[] columnNames = {"ID Venta", "Precio Total", "Fecha Venta", "Matrícula", "Estado"};
-        GestionVentas gestionVentas = new GestionVentas();
-        List<Venta> ventas = gestionVentas.obtenerVentas();
-
-        Object[][] data = new Object[ventas.size()][columnNames.length];
-        for (int i = 0; i < ventas.size(); i++) {
-            Venta venta = ventas.get(i);
-            data[i][0] = venta.getIdVenta();
-            data[i][1] = venta.getPrecioTotal();
-            data[i][2] = venta.getFechaVenta();
-            data[i][3] = venta.getMatricula();
-        }
-
-        tabla.setModel(new DefaultTableModel(data, columnNames));
-    }
-
 
     public static void main(String[] args) {
         new Main_Asesor();

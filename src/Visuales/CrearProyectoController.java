@@ -1,3 +1,4 @@
+import Logica.Proyecto.Proyecto;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -17,8 +18,11 @@ public class CrearProyectoController {
             return null;
         }
 
+        Proyecto proyecto = new Proyecto();
+        proyecto.setNombre(nombreProyecto);
+
         // Guardar el proyecto utilizando GestionProyectos
-        boolean proyectoGuardado = gestionProyectos.guardarProyecto(nombreProyecto, frame);
+        boolean proyectoGuardado = gestionProyectos.guardarProyecto(proyecto, frame);
 
         if (proyectoGuardado) {
             // Si el proyecto se guardó correctamente, obtenemos el código

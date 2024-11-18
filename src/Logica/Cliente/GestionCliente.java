@@ -12,8 +12,8 @@ public class GestionCliente {
         this.crudCliente = new CrudCliente();
     }
 
-    public List<Cliente> obtenerClientes() {
-        return crudCliente.obtenerClientes();
+    public List<Cliente> obtenerClientes(String criterio) {
+        return crudCliente.obtener(criterio);
     }
 
     public boolean guardarCliente(Cliente cliente, JFrame frame) {
@@ -21,14 +21,14 @@ public class GestionCliente {
             JOptionPane.showMessageDialog(frame, "El documento no puede estar vacío.");
             return false;
         }
-        return crudCliente.guardarCliente(cliente);
+        return crudCliente.guardar(cliente);
     }
 
     public boolean actualizarCliente(Cliente cliente) {
-        return crudCliente.actualizarCliente(cliente);
+        return crudCliente.actualizar(cliente);
     }
 
     public boolean eliminarCliente(String numDocumento) {
-        return crudCliente.eliminarCliente(numDocumento);
+        return crudCliente.eliminar(numDocumento);
     }
 }

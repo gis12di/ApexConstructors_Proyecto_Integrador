@@ -1,28 +1,50 @@
-import Logica.Pago.Pago;
+// GestionPago.java
+package Logica.Pago;
+
 import Persistencia.CrudPago;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class GestionPagos {
-    private CrudPago crudPago;
+public class GestionPago {
+    private final CrudPago crudPago;
 
-    public GestionPagos() {
-        crudPago = new CrudPago();
+    public GestionPago() {
+        this.crudPago = new CrudPago();
     }
 
-    // Pagos realizados
+    public List<Pago> obtenerPagos(String criterio) {
+        return crudPago.obtener(criterio);
+    }
+
+    public boolean guardarPago(Pago pago, JFrame frame) {
+        if (pago.getIdPago() == null || pago.getIdPago().isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "El ID del pago no puede estar vacío.");
+            return false;
+        }
+        return crudPago.guardar(pago);
+    }
+
+    public boolean actualizarPago(Pago pago) {
+        return crudPago.actualizar(pago);
+    }
+
+    public boolean eliminarPago(String idPago) {
+        return crudPago.eliminar(idPago);
+    }
+    
     public List<Pago> obtenerPagosRealizados() {
-        return crudPago.obtenerPagos().stream()
+        return crudPago.obtener("").stream()
                 .filter(p -> "Pagado".equalsIgnoreCase(p.getEstadoPago()))
                 .collect(Collectors.toList());
     }
 
-    // Pagos vencidos
     public List<Pago> obtenerPagosVencidos() {
         LocalDate fechaActual = LocalDate.now(ZoneId.of("America/Bogota"));
-        return crudPago.obtenerPagos().stream()
+        return crudPago.obtener("").stream()
                 .filter(p -> {
                     LocalDate fechaPago = p.getFechaPago().toInstant()
                                              .atZone(ZoneId.systemDefault())
@@ -32,11 +54,9 @@ public class GestionPagos {
                 .collect(Collectors.toList());
     }
 
-
-    // Pagos pendientes
     public List<Pago> obtenerPagosPendientes() {
         LocalDate fechaActual = LocalDate.now(ZoneId.of("America/Bogota"));
-        return crudPago.obtenerPagos().stream()
+        return crudPago.obtener("").stream()
                 .filter(p -> {
                     LocalDate fechaPago = p.getFechaPago().toInstant()
                                              .atZone(ZoneId.systemDefault())
@@ -45,5 +65,4 @@ public class GestionPagos {
                 })
                 .collect(Collectors.toList());
     }
-
 }

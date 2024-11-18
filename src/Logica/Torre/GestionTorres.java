@@ -2,7 +2,6 @@ package Logica.Torre;
 
 
 // GestionTorres.java
-import Logica.Torre.Torre; // Importa la clase Torre
 import Persistencia.CrudTorres; // Importa la clase CrudTorres para realizar operaciones CRUD en las torres
 import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
@@ -18,7 +17,7 @@ public class GestionTorres {
         System.out.println("Torre actualizada correctamente.");
     }
 
-    public void eliminarTorre(int id) {//Elimina una torre de la base de datos.
+    public void eliminarTorre(String id) {//Elimina una torre de la base de datos.
         crudTorres.eliminar(id);
         System.out.println("Torre eliminada correctamente.");
     }
@@ -33,6 +32,6 @@ public class GestionTorres {
     }
 
     public List<Torre> obtenerTorresPorCodProyecto(String codProyecto) {//Obtiene una lista de torres por código de proyecto.
-        return crudTorres.obtenerPorCodProyecto(codProyecto);
+        return crudTorres.obtener(codProyecto);
     }
 }

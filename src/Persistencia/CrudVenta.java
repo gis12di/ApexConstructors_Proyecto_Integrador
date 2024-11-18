@@ -1,14 +1,15 @@
 package Persistencia;
 
+import Logica.Interfaz.Cruds;
 import Logica.Venta.Venta;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrudVenta {
+public class CrudVenta implements Cruds<Venta> {
 
-    // Método para obtener todas las ventas
-    public List<Venta> obtenerVentas() {
+    @Override
+    public List<Venta> obtener(String criterio) {
         List<Venta> ventas = new ArrayList<>();
         String sql = "SELECT * FROM venta";
         try (Connection conn = Conexion.getConnection();
@@ -37,8 +38,8 @@ public class CrudVenta {
         return ventas;
     }
 
-    // Método para guardar una nueva venta
-    public boolean guardarVenta(Venta venta) {
+    @Override
+    public boolean guardar(Venta venta) {
         String sql = "INSERT INTO venta (idventa, precio_total, fechaventa, matricula, fechaescritura, idinmueble, numdocumento, cedasesor, num_pago, valor_inicial, excedente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -63,8 +64,8 @@ public class CrudVenta {
         }
     }
 
-    // Método para actualizar una venta existente
-    public boolean actualizarVenta(Venta venta) {
+    @Override
+    public boolean actualizar(Venta venta) {
         String sql = "UPDATE venta SET precio_total = ?, fechaventa = ?, matricula = ?, fechaescritura = ?, idinmueble = ?, numdocumento = ?, cedasesor = ?, num_pago = ?, valor_inicial = ?, excedente = ? WHERE idventa = ?";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -80,7 +81,7 @@ public class CrudVenta {
             stmt.setDouble(9, venta.getValorInicial());
             stmt.setDouble(10, venta.getExcedente());
             stmt.setString(11, venta.getIdVenta());
-            
+
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
 
@@ -90,13 +91,13 @@ public class CrudVenta {
         }
     }
 
-    // Método para eliminar una venta por su ID
-    public boolean eliminarVenta(String idVenta) {
+    @Override
+    public boolean eliminar(String criterio) {
         String sql = "DELETE FROM venta WHERE idventa = ?";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, idVenta);
+            stmt.setString(1, criterio);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted > 0;
 

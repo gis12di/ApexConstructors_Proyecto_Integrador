@@ -1,4 +1,5 @@
 import Logica.Inmuebles.Inmueble;
+import Persistencia.CrudInmuebles;
 import java.util.List;
 
 public class GestionInmuebles {
@@ -10,6 +11,11 @@ public class GestionInmuebles {
 
     // Método para guardar un inmueble
     public boolean guardarInmueble(Inmueble inmueble) {
+        if (inmueble == null) {
+            System.out.println("Error: El inmueble proporcionado es nulo.");
+            return false;
+        }
+
         boolean guardado = crudInmuebles.guardar(inmueble);
         if (guardado) {
             System.out.println("Inmueble guardado correctamente.");
@@ -21,6 +27,11 @@ public class GestionInmuebles {
 
     // Método para actualizar un inmueble
     public boolean actualizarInmueble(Inmueble inmueble) {
+        if (inmueble == null) {
+            System.out.println("Error: El inmueble proporcionado es nulo.");
+            return false;
+        }
+
         boolean actualizado = crudInmuebles.actualizar(inmueble);
         if (actualizado) {
             System.out.println("Inmueble actualizado correctamente.");
@@ -32,6 +43,11 @@ public class GestionInmuebles {
 
     // Método para eliminar un inmueble
     public boolean eliminarInmueble(String id) {
+        if (id == null || id.isEmpty()) {
+            System.out.println("Error: El ID proporcionado es nulo o vacío.");
+            return false;
+        }
+
         boolean eliminado = crudInmuebles.eliminar(id);
         if (eliminado) {
             System.out.println("Inmueble eliminado correctamente.");
@@ -43,6 +59,15 @@ public class GestionInmuebles {
 
     // Método para obtener una lista de inmuebles por ID de torre
     public List<Inmueble> obtenerInmueblesPorTorre(String idTorre) {
-        return crudInmuebles.obtenerPorIdTorre(idTorre);
+        if (idTorre == null || idTorre.isEmpty()) {
+            System.out.println("Error: El ID de la torre proporcionado es nulo o vacío.");
+            return null;
+        }
+
+        List<Inmueble> inmuebles = crudInmuebles.obtener(idTorre);
+        if (inmuebles == null) {
+            System.out.println("Error: No se encontraron inmuebles para la torre especificada.");
+        }
+        return inmuebles;
     }
 }

@@ -33,7 +33,8 @@ public class AdminController {//La clase AdminController gestiona las acciones d
 
 
     public void actualizarTablaProyectos(DefaultTableModel tableModel) {//Actualiza la tabla de proyectos con los datos más recientes
-        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos();
+        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos("", null); // Sin criterio y sin frame
+
 
         tableModel.setRowCount(0); // Limpiar la tabla
         for (Proyecto proy : proyectos) {
