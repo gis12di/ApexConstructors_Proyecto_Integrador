@@ -1,4 +1,4 @@
-
+import Logica.Interfaz.Cruds;
 import Logica.Inmuebles.Inmueble; // Importa la clase Inmueble
 import Persistencia.Conexion; // Importa la clase Conexion para obtener conexiones a la base de datos
 import java.sql.Connection; // Importa la clase Connection para manejar la conexión a la base de datos
@@ -8,9 +8,10 @@ import java.sql.SQLException; // Importa la clase SQLException para manejar exce
 import java.util.ArrayList; // Importa la clase ArrayList para manejar listas dinámicas
 import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
-public class CrudInmuebles {
+public class CrudInmuebles implements Cruds<Inmueble> {
 
     // Método para guardar un inmueble en la base de datos
+    @Override
     public boolean guardar(Inmueble inmueble) {
         Connection con = Conexion.getConnection();// Obtiene una conexión a la base de datos
         String checkSql = "SELECT COUNT(*) FROM torre WHERE ID = ?";
@@ -38,6 +39,7 @@ public class CrudInmuebles {
     }
 
     // Método para actualizar un inmueble
+    @Override
     public boolean actualizar(Inmueble inmueble) {
         Connection con = Conexion.getConnection();
         String sql = "UPDATE Inmueble SET numInmueble = ?, tipoUnidad = ?, valor = ?, area = ?, idTorre = ? WHERE id = ?";
@@ -57,23 +59,9 @@ public class CrudInmuebles {
         return false;
     }
 
-    // Método para eliminar un inmueble
-    public boolean eliminar(int id) {
-        Connection con = Conexion.getConnection();
-        String sql = "DELETE FROM Inmueble WHERE id = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     // Método para obtener inmuebles por ID de torre
-    public List<Inmueble> obtenerPorIdTorre(String idTorre) {
+    @Override
+    public List<Inmueble> obtener(String idTorre) {
         List<Inmueble> inmuebles = new ArrayList<>();
         Connection con = Conexion.getConnection();
         String sql = "SELECT * FROM Inmueble WHERE idTorre = ?";
@@ -97,4 +85,23 @@ public class CrudInmuebles {
         }
         return inmuebles;// Retorna la lista de inmuebles
     }
+
+    // Método para eliminar un inmueble
+
+    @Override
+    public boolean eliminar(String id) {
+        Connection con = Conexion.getConnection();
+        String sql= "DELETE FROM Inmueble WHERE codigo = ?";
+     
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, (String) id);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

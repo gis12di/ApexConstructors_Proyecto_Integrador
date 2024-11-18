@@ -1,13 +1,15 @@
 package Persistencia;
 
+import Logica.Interfaz.Cruds;
 import Logica.Pago.Pago;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrudPago {
+public class CrudPago implements Cruds<Pago>{
 
-    public List<Pago> obtenerPagos() {
+    @Override
+    public List<Pago> obtener(String criterio) {
         List<Pago> pagos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -45,7 +47,8 @@ public class CrudPago {
         return pagos;
     }
 
-    public boolean guardarPago(Pago pago) {
+    @Override
+    public boolean guardar(Pago pago) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -77,7 +80,8 @@ public class CrudPago {
         }
     }
 
-    public boolean actualizarPago(Pago pago) {
+    @Override
+    public boolean actualizar(Pago pago) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -109,7 +113,8 @@ public class CrudPago {
         }
     }
 
-    public boolean eliminarPago(String idPago) {
+    @Override
+    public boolean eliminar(String idPago) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -134,4 +139,6 @@ public class CrudPago {
             }
         }
     }
+
+   
 }

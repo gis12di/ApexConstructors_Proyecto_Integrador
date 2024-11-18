@@ -31,7 +31,7 @@ public class GestionInmuebles {
     }
 
     // Método para eliminar un inmueble
-    public boolean eliminarInmueble(int id) {
+    public boolean eliminarInmueble(String id) {
         boolean eliminado = crudInmuebles.eliminar(id);
         if (eliminado) {
             System.out.println("Inmueble eliminado correctamente.");
@@ -43,6 +43,6 @@ public class GestionInmuebles {
 
     // Método para obtener una lista de inmuebles por ID de torre
     public List<Inmueble> obtenerInmueblesPorTorre(String idTorre) {
-        return crudInmuebles.obtenerPorIdTorre(idTorre);
+        return crudInmuebles.obtener(idTorre);
     }
 }

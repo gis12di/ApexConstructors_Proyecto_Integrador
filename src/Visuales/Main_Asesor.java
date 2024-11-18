@@ -147,7 +147,7 @@ public class Main_Asesor extends JFrame {
         CrudTorres crudTorres = new CrudTorres();
 
         // Obtener las torres del proyecto seleccionado
-        List<Torre> torres = crudTorres.obtenerPorCodProyecto(String.valueOf(codigoProyecto));
+        List<Torre> torres = crudTorres.obtener(String.valueOf(codigoProyecto));
 
         // Limpiar el comboBox de torres antes de añadir nuevas
         comboTorres.removeAllItems();

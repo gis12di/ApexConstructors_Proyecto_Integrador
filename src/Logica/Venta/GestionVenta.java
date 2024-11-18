@@ -12,8 +12,8 @@ public class GestionVenta {
         this.crudVenta = new CrudVenta();
     }
 
-    public List<Venta> obtenerVentas() {
-        return crudVenta.obtenerVentas();
+    public List<Venta> obtenerVentas(String criterio) {
+        return crudVenta.obtener(criterio);
     }
 
     public boolean guardarVenta(Venta venta, JFrame frame) {
@@ -21,14 +21,14 @@ public class GestionVenta {
             JOptionPane.showMessageDialog(frame, "El ID de la venta no puede estar vacío.");
             return false;
         }
-        return crudVenta.guardarVenta(venta);
+        return crudVenta.guardar(venta);
     }
 
     public boolean actualizarVenta(Venta venta) {
-        return crudVenta.actualizarVenta(venta);
+        return crudVenta.actualizar(venta);
     }
 
     public boolean eliminarVenta(String idVenta) {
-        return crudVenta.eliminarVenta(idVenta);
+        return crudVenta.eliminar(idVenta);
     }
 }

@@ -1,13 +1,15 @@
 package Persistencia;
 
+import Logica.Interfaz.Cruds;
 import Logica.Venta.Venta;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrudVenta {
+public class CrudVenta implements Cruds<Venta>{
 
-    public List<Venta> obtenerVentas() {
+    @Override
+    public List<Venta> obtener(String criterio) {
         List<Venta> ventas = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -46,7 +48,8 @@ public class CrudVenta {
         return ventas;
     }
 
-    public boolean guardarVenta(Venta venta) {
+    @Override
+    public boolean guardar(Venta venta) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -79,7 +82,8 @@ public class CrudVenta {
         }
     }
 
-    public boolean actualizarVenta(Venta venta) {
+    @Override
+    public boolean actualizar(Venta venta) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -112,7 +116,8 @@ public class CrudVenta {
         }
     }
 
-    public boolean eliminarVenta(String idVenta) {
+    @Override
+    public boolean eliminar(String idVenta) {
         Connection conn = null;
         PreparedStatement stmt = null;
 

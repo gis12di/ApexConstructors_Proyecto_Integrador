@@ -12,8 +12,8 @@ public class GestionPago {
         this.crudPago = new CrudPago();
     }
 
-    public List<Pago> obtenerPagos() {
-        return crudPago.obtenerPagos();
+    public List<Pago> obtenerPagos(String criterio) {
+        return crudPago.obtener(criterio);
     }
 
     public boolean guardarPago(Pago pago, JFrame frame) {
@@ -21,14 +21,14 @@ public class GestionPago {
             JOptionPane.showMessageDialog(frame, "El ID del pago no puede estar vacío.");
             return false;
         }
-        return crudPago.guardarPago(pago);
+        return crudPago.guardar(pago);
     }
 
     public boolean actualizarPago(Pago pago) {
-        return crudPago.actualizarPago(pago);
+        return crudPago.actualizar(pago);
     }
 
     public boolean eliminarPago(String idPago) {
-        return crudPago.eliminarPago(idPago);
+        return crudPago.eliminar(idPago);
     }
 }
