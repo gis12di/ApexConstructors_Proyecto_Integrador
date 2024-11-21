@@ -4,14 +4,18 @@ import Logica.Torre.Torre;
 import Persistencia.CrudTorres;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class PanelInmuebles extends JPanel {
     private JComboBox<Proyecto> comboProyectos;
     private JComboBox<Torre> comboTorres;
-    private JTextArea textAreaInmuebles;
+    private JTable tableInmuebles;
+    private DefaultTableModel tableModel;
     private GestionProyectos gestionProyectos;
     private GestionInmuebles gestionInmuebles;
+    private Inmueble inmuebleSeleccionado;
+
 
     public PanelInmuebles() {
         setLayout(new BorderLayout());
@@ -22,13 +26,14 @@ public class PanelInmuebles extends JPanel {
         comboTorres = new JComboBox<>();
         comboTorres.setEnabled(false);
 
-        textAreaInmuebles = new JTextArea(10, 30);
-        textAreaInmuebles.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textAreaInmuebles);
+        // Configuración de la tabla
+        String[] columnNames = {"ID", "Número", "Tipo Unidad", "Valor", "Área"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        tableInmuebles = new JTable(tableModel);
+        JScrollPane scrollPane = new JScrollPane(tableInmuebles);
 
         cargarProyectos();
 
-        // Listener para cargar las torres al seleccionar un proyecto
         comboProyectos.addActionListener(e -> {
             Proyecto proyectoSeleccionado = (Proyecto) comboProyectos.getSelectedItem();
             if (proyectoSeleccionado != null && proyectoSeleccionado.getCodigo() != 0) {
@@ -41,32 +46,51 @@ public class PanelInmuebles extends JPanel {
             }
         });
 
-        // Listener para mostrar inmuebles al seleccionar una torre
         comboTorres.addActionListener(e -> {
             Torre torreSeleccionada = (Torre) comboTorres.getSelectedItem();
             if (torreSeleccionada != null && !torreSeleccionada.getId().equals("0")) {
                 mostrarInmuebles(torreSeleccionada.getId());
             } else {
-                textAreaInmuebles.setText("Seleccione una torre válida.");
+                tableModel.setRowCount(0); // Limpiar tabla
             }
         });
 
-        // Panel para los combos
+        // Agregar listener para capturar el inmueble seleccionado
+        tableInmuebles.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                int selectedRow = tableInmuebles.getSelectedRow();
+                if (selectedRow != -1) {
+                    String id = (String) tableModel.getValueAt(selectedRow, 0);
+                    String numInmueble = (String) tableModel.getValueAt(selectedRow, 1);
+                    String tipoUnidad = (String) tableModel.getValueAt(selectedRow, 2);
+                    double valorInmueble = (double) tableModel.getValueAt(selectedRow, 3);
+                    double area = (double) tableModel.getValueAt(selectedRow, 4);
+
+                    // Actualizar el inmueble seleccionado
+                    inmuebleSeleccionado = new Inmueble();
+                    inmuebleSeleccionado.setId(id);
+                    inmuebleSeleccionado.setNumInmueble(numInmueble);
+                    inmuebleSeleccionado.setTipoUnidad(tipoUnidad);
+                    inmuebleSeleccionado.setValorInmueble(valorInmueble);
+                    inmuebleSeleccionado.setArea(area);
+                }
+            }
+        });
+
+
         JPanel panelCombos = new JPanel();
         panelCombos.add(new JLabel("Proyecto:"));
         panelCombos.add(comboProyectos);
         panelCombos.add(new JLabel("Torre:"));
         panelCombos.add(comboTorres);
 
-        // Añadir los paneles al layout principal
         add(panelCombos, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
 
+
     private void cargarProyectos() {
-        // Obtiene el JFrame padre y pásalo como segundo argumento
-        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos("", parentFrame);
+        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos("", null);
         comboProyectos.removeAllItems();
         comboProyectos.addItem(new Proyecto(0, "Seleccionar Proyecto"));
         for (Proyecto proyecto : proyectos) {
@@ -75,9 +99,7 @@ public class PanelInmuebles extends JPanel {
     }
 
     public void cargarTorres(int codigoProyecto) {
-        CrudTorres crudTorres = new CrudTorres();
-        List<Torre> torres = crudTorres.obtener(String.valueOf(codigoProyecto));
-
+        List<Torre> torres = new CrudTorres().obtener(String.valueOf(codigoProyecto));
         comboTorres.removeAllItems();
         comboTorres.addItem(new Torre("0", "Seleccionar Torre"));
 
@@ -92,17 +114,35 @@ public class PanelInmuebles extends JPanel {
 
     private void mostrarInmuebles(String torreId) {
         List<Inmueble> inmuebles = gestionInmuebles.obtenerInmueblesPorTorre(torreId);
-        textAreaInmuebles.setText(""); // Limpiar el área de texto
+        tableModel.setRowCount(0); // Limpiar tabla
         if (inmuebles != null && !inmuebles.isEmpty()) {
             for (Inmueble inmueble : inmuebles) {
-                textAreaInmuebles.append("Inmueble ID: " + inmueble.getId() + "\n");
-                textAreaInmuebles.append("Número: " + inmueble.getNumInmueble() + "\n");
-                textAreaInmuebles.append("Tipo de Unidad: " + inmueble.getTipoUnidad() + "\n");
-                textAreaInmuebles.append("Valor: $" + inmueble.getValorInmueble() + "\n");
-                textAreaInmuebles.append("Área: " + inmueble.getArea() + " m²\n\n");
+                tableModel.addRow(new Object[]{
+                        inmueble.getId(),
+                        inmueble.getNumInmueble(),
+                        inmueble.getTipoUnidad(),
+                        inmueble.getValorInmueble(),
+                        inmueble.getArea()
+                });
             }
-        } else {
-            textAreaInmuebles.setText("No hay inmuebles disponibles para esta torre.");
         }
     }
+
+    public String getInmuebleSeleccionado() {
+        if (inmuebleSeleccionado != null) {
+            return "ID: " + inmuebleSeleccionado.getId() +
+                   ", Número: " + inmuebleSeleccionado.getNumInmueble() +
+                   ", Tipo: " + inmuebleSeleccionado.getTipoUnidad();
+        }
+        return null;
+    }
+
+
+    public double getPrecioInmuebleSeleccionado() {
+        if (inmuebleSeleccionado != null) {
+            return inmuebleSeleccionado.getValorInmueble();
+        }
+        return 0;
+    }
+
 }

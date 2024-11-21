@@ -17,11 +17,19 @@ public class PanelVentas extends JPanel {
     private void abrirFormularioVenta() {
         JFrame ventana = new JFrame("Formulario de Venta");
         ventana.setSize(500, 400);
-        ventana.setLayout(new GridLayout(9, 2, 10, 10));
+        ventana.setLayout(new GridLayout(10, 2, 10, 10));
 
         // Campos del formulario
         JLabel lblPrecioTotal = new JLabel("Precio Total:");
-        JComboBox<String> comboInmuebles = new JComboBox<>(new String[]{"Inmueble 1", "Inmueble 2"});
+        JTextField txtPrecioTotal = new JTextField();
+        txtPrecioTotal.setEditable(false); // Solo editable después de seleccionar un inmueble.
+
+        JLabel lblInmuebleSeleccionado = new JLabel("Inmueble Seleccionado:");
+        JTextField txtInmuebleSeleccionado = new JTextField();
+        txtInmuebleSeleccionado.setEditable(false);
+
+        JButton btnSeleccionarInmueble = new JButton("Seleccionar Inmueble");
+        btnSeleccionarInmueble.addActionListener(e -> abrirSelectorInmuebles(txtInmuebleSeleccionado, txtPrecioTotal));
 
         JLabel lblFechaVenta = new JLabel("Fecha Venta:");
         JTextField txtFechaVenta = new JTextField(LocalDate.now().toString());
@@ -54,7 +62,7 @@ public class PanelVentas extends JPanel {
 
         txtInicial.addActionListener(e -> {
             try {
-                double precioTotal = 1000000; // Ejemplo
+                double precioTotal = Double.parseDouble(txtPrecioTotal.getText());
                 double inicial = Double.parseDouble(txtInicial.getText());
                 txtExcedente.setText(String.valueOf(precioTotal - inicial));
             } catch (NumberFormatException ex) {
@@ -64,7 +72,11 @@ public class PanelVentas extends JPanel {
 
         // Agregar componentes
         ventana.add(lblPrecioTotal);
-        ventana.add(comboInmuebles);
+        ventana.add(txtPrecioTotal);
+        ventana.add(lblInmuebleSeleccionado);
+        ventana.add(txtInmuebleSeleccionado);
+        ventana.add(new JLabel());
+        ventana.add(btnSeleccionarInmueble);
         ventana.add(lblFechaVenta);
         ventana.add(txtFechaVenta);
         ventana.add(lblMatricula);
@@ -89,4 +101,39 @@ public class PanelVentas extends JPanel {
 
         ventana.setVisible(true);
     }
+
+    private void abrirSelectorInmuebles(JTextField txtInmuebleSeleccionado, JTextField txtPrecioTotal) {
+        JFrame selector = new JFrame("Seleccionar Inmueble");
+        selector.setSize(600, 400);
+        selector.setLayout(new BorderLayout());
+
+        // Crear el panel de inmuebles
+        PanelInmuebles panelInmuebles = new PanelInmuebles();
+
+        // Crear el botón para seleccionar inmueble
+        JButton btnSeleccionar = new JButton("Seleccionar Inmueble");
+
+        // Agregar acción al botón
+        btnSeleccionar.addActionListener(e -> {
+            String seleccionado = panelInmuebles.getInmuebleSeleccionado();
+            double precio = panelInmuebles.getPrecioInmuebleSeleccionado();
+
+            if (seleccionado != null && precio > 0) {
+                txtInmuebleSeleccionado.setText(seleccionado);
+                txtPrecioTotal.setText(String.valueOf(precio));
+                selector.dispose();
+            } else {
+                JOptionPane.showMessageDialog(selector, "Debe seleccionar un inmueble válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Agregar el panel y el botón al JFrame
+        selector.add(panelInmuebles, BorderLayout.CENTER);
+        selector.add(btnSeleccionar, BorderLayout.SOUTH);
+
+        // Mostrar el JFrame
+        selector.setVisible(true);
+    }
+   
+
 }
