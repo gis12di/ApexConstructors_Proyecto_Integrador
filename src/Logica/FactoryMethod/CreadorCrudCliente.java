@@ -15,6 +15,6 @@ import Persistencia.CrudCliente;
 public class CreadorCrudCliente extends CreadorCrud<Cliente>{
     @Override
     public Cruds<Cliente> crearCrud() {
-            return (Cruds<Cliente>) new CrudCliente();
+        return (Cruds<Cliente>) new CrudCliente();
     }
 }

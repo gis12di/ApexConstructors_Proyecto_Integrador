@@ -12,5 +12,6 @@ import Logica.Interfaz.Cruds;
  * @param <Tipo>
  */
 public abstract class CreadorCrud<Tipo> {
+    
     public abstract Cruds<Tipo> crearCrud();
 }
