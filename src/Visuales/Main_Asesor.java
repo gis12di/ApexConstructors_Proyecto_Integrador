@@ -1,32 +1,13 @@
-import Logica.Inmuebles.Inmueble;
-import Logica.Proyecto.Proyecto;
-import Logica.Torre.GestionTorres;
-import Logica.Torre.Torre;
-import Persistencia.CrudTorres;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.border.EmptyBorder;
 
 public class Main_Asesor extends JFrame {
     private JPanel panelMenu;
     private JPanel panelContenido;
     private CardLayout cardLayout;
-    private JComboBox<Proyecto> comboProyectos;
-    private JComboBox<Torre> comboTorres;
-    private JTextArea textAreaInmuebles;
-
-    private GestionProyectos gestionProyectos;
-    private GestionTorres gestionTorres;
-    private GestionInmuebles gestionInmuebles;
 
     public Main_Asesor() {
-        gestionProyectos = new GestionProyectos();
-        gestionTorres = new GestionTorres();
-        gestionInmuebles = new GestionInmuebles();
-
         panelMenu = new JPanel();
         panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
         panelMenu.setPreferredSize(new Dimension(175, getHeight()));
@@ -46,7 +27,6 @@ public class Main_Asesor extends JFrame {
         btnPagosVencidos.addActionListener(e -> cardLayout.show(panelContenido, "PagosVencidos"));
         btnRegistrarPago.addActionListener(e -> JOptionPane.showMessageDialog(this, "Registrar Pago seleccionado"));
         btnVentas.addActionListener(e -> cardLayout.show(panelContenido, "Ventas"));
-        
 
         panelMenu.add(Box.createRigidArea(new Dimension(0, 20)));
         panelMenu.add(btnInmuebles);
@@ -60,11 +40,14 @@ public class Main_Asesor extends JFrame {
         panelMenu.add(btnPagosVencidos);
         panelMenu.add(Box.createVerticalGlue());
         panelMenu.add(btnRegistrarPago);
-        
+
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
-
-        JPanel panelInmuebles = crearPanelInmuebles();
+        
+        JPanel panelInmuebles = new JPanel();
+        panelInmuebles.setBackground(Color.WHITE);
+        panelContenido.add(new PanelInmuebles(), "Inmuebles");
+        
         JPanel panelPagosPendientes = new JPanel();
         panelPagosPendientes.setBackground(Color.WHITE);
         panelPagosPendientes.add(new JLabel("Contenido de Pagos Pendientes"));
@@ -79,13 +62,13 @@ public class Main_Asesor extends JFrame {
         
         JPanel panelVentas = new JPanel();
         panelVentas.setBackground(Color.WHITE);
-        panelVentas.add(new JLabel("Contenido de Ventas"));
+        panelContenido.add(new PanelVentas(), "Ventas");
         
-        panelContenido.add(panelInmuebles, "Inmuebles");
+        
         panelContenido.add(panelPagosPendientes, "PagosPendientes");
         panelContenido.add(panelPagosRealizados, "PagosRealizados");
         panelContenido.add(panelPagosVencidos, "PagosVencidos");
-        panelContenido.add(panelVentas, "Ventas");
+        
 
         setLayout(new BorderLayout());
         add(panelMenu, BorderLayout.WEST);
@@ -95,97 +78,6 @@ public class Main_Asesor extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-    }
-    
-    private JPanel crearPanelInmuebles() {
-        JPanel panelInmuebles = new JPanel(new BorderLayout());
-        panelInmuebles.setBackground(Color.WHITE);
-
-        comboProyectos = new JComboBox<>();
-        comboTorres = new JComboBox<>();
-        comboTorres.setEnabled(false);
-
-        textAreaInmuebles = new JTextArea(10, 30);
-        textAreaInmuebles.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textAreaInmuebles);
-
-        cargarProyectos();
-
-        comboProyectos.addActionListener(e -> {
-            Proyecto proyectoSeleccionado = (Proyecto) comboProyectos.getSelectedItem();
-            if (proyectoSeleccionado != null && proyectoSeleccionado.getCodigo() != 0) {
-                comboTorres.setEnabled(true); // Habilitar el ComboBox de Torres
-                cargarTorres(proyectoSeleccionado.getCodigo());
-            } else {
-                comboTorres.setEnabled(false); // Deshabilitar si no hay un proyecto válido
-                comboTorres.removeAllItems();
-                comboTorres.addItem(new Torre("0", "Seleccionar Torre"));
-            }
-        });
-
-
-
-
-        comboTorres.addActionListener(e -> {
-            Torre torreSeleccionada = (Torre) comboTorres.getSelectedItem();
-            if (torreSeleccionada != null) {
-                mostrarInmuebles(torreSeleccionada.getId());
-            }
-        });
-
-        JPanel panelCombos = new JPanel();
-        panelCombos.add(new JLabel("Proyecto:"));
-        panelCombos.add(comboProyectos);
-        panelCombos.add(new JLabel("Torre:"));
-        panelCombos.add(comboTorres);
-
-        panelInmuebles.add(panelCombos, BorderLayout.NORTH);
-        panelInmuebles.add(scrollPane, BorderLayout.CENTER);
-
-        return panelInmuebles;
-    }
-
-    private void cargarProyectos() {
-        // Pasa un criterio de búsqueda vacío y el JFrame actual
-        List<Proyecto> proyectos = gestionProyectos.obtenerProyectos("", this);
-        comboProyectos.removeAllItems();
-        comboProyectos.addItem(new Proyecto(0, "Seleccionar Proyecto"));
-        for (Proyecto proyecto : proyectos) {
-            comboProyectos.addItem(proyecto);
-        }
-    }
-
-
-
-
-    public void cargarTorres(int codigoProyecto) {
-        // Instancia de CrudTorres para acceder a los métodos de persistencia
-        CrudTorres crudTorres = new CrudTorres();
-
-        // Obtener las torres del proyecto seleccionado
-        List<Torre> torres = crudTorres.obtener(String.valueOf(codigoProyecto));
-
-        // Limpiar el comboBox de torres antes de añadir nuevas
-        comboTorres.removeAllItems();
-        comboTorres.addItem(new Torre("0", "Seleccionar Torre")); // Opción por defecto
-
-        // Añadir cada torre al comboBox
-        for (Torre torre : torres) {
-            comboTorres.addItem(torre);
-        }
-    }
-
-
-    private void mostrarInmuebles(String torreId) {
-        List<Inmueble> inmuebles = gestionInmuebles.obtenerInmueblesPorTorre(torreId);
-        textAreaInmuebles.setText("");
-        for (Inmueble inmueble : inmuebles) {
-            textAreaInmuebles.append("Inmueble ID: " + inmueble.getId() + "\n");
-            textAreaInmuebles.append("Número: " + inmueble.getNumInmueble() + "\n");
-            textAreaInmuebles.append("Tipo de Unidad: " + inmueble.getTipoUnidad() + "\n");
-            textAreaInmuebles.append("Valor: $" + inmueble.getValorInmueble() + "\n");
-            textAreaInmuebles.append("Área: " + inmueble.getArea() + " m²\n\n");
-        }
     }
 
     private JButton crearBotonConIcono(String texto, String rutaIcono) {
