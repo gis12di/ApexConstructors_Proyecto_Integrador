@@ -1,7 +1,7 @@
-// GestionPago.java
 package Logica.Pago;
 
-import Persistencia.CrudPago;
+import Logica.FactoryMethod.CreadorCrudPago;
+import Logica.Interfaz.Cruds;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import javax.swing.JFrame;
@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GestionPago {
-    private final CrudPago crudPago;
+    private final Cruds<Pago> crudPago;
 
     public GestionPago() {
-        this.crudPago = new CrudPago();
+        CreadorCrudPago creador = new CreadorCrudPago();
+        this.crudPago = creador.crearCrud();
     }
 
     public List<Pago> obtenerPagos(String criterio) {

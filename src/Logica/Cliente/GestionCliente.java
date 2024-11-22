@@ -1,15 +1,17 @@
 package Logica.Cliente;
 
-import Persistencia.CrudCliente;
+import Logica.FactoryMethod.CreadorCrudCliente;
+import Logica.Interfaz.Cruds;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.List;
 
 public class GestionCliente {
-    private final CrudCliente crudCliente;
+    private final Cruds<Cliente> crudCliente;
 
     public GestionCliente() {
-        this.crudCliente = new CrudCliente();
+        CreadorCrudCliente creador = new CreadorCrudCliente();
+        this.crudCliente = creador.crearCrud();
     }
 
     public List<Cliente> obtenerClientes(String criterio) {

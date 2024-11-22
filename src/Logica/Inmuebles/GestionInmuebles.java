@@ -1,12 +1,15 @@
-import Logica.Inmuebles.Inmueble;
-import Persistencia.CrudInmuebles;
+package Logica.Inmuebles;
+
+import Logica.FactoryMethod.CreadorCrudInmuebles;
+import Logica.Interfaz.Cruds;
 import java.util.List;
 
 public class GestionInmuebles {
-    private CrudInmuebles crudInmuebles;
+    private final Cruds<Inmueble> crudInmuebles;
 
     public GestionInmuebles() {
-        this.crudInmuebles = new CrudInmuebles();
+        CreadorCrudInmuebles creador = new CreadorCrudInmuebles();
+        this.crudInmuebles = creador.crearCrud();
     }
 
     // Método para guardar un inmueble

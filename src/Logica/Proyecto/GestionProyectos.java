@@ -1,14 +1,18 @@
-import Logica.Proyecto.Proyecto;
+package Logica.Proyecto;
+
+import Logica.FactoryMethod.CreadorCrudProyectos;
+import Logica.Interfaz.Cruds;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GestionProyectos {
 
-    private final CrudProyectos crudProyectos;
+    private final Cruds<Proyecto> crudProyectos;
 
     public GestionProyectos() {
-        this.crudProyectos = new CrudProyectos();
+        CreadorCrudProyectos creador = new CreadorCrudProyectos();
+        this.crudProyectos = creador.crearCrud();
     }
 
     // Método para obtener proyectos según un criterio

@@ -4,17 +4,20 @@
  */
 package Logica.FactoryMethod;
 
-import Logica.Cliente.Cliente;
+
 import Logica.Interfaz.Cruds;
-import Persistencia.CrudCliente;
+import Logica.Pago.Pago;
+import Persistencia.CrudPago;
 
 /**
  *
  * @author giset
  */
-public class CreadorCrudCliente extends CreadorCrud<Cliente>{
+public class CreadorCrudPago extends CreadorCrud<Pago> {
+
     @Override
-    public Cruds<Cliente> crearCrud() {
-        return new CrudCliente();
+    public Cruds<Pago> crearCrud() {
+        return new CrudPago();
     }
+    
 }

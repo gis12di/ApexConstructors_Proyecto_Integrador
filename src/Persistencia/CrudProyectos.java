@@ -1,10 +1,10 @@
+package Persistencia;
+
 import Logica.Interfaz.Cruds;
 import java.sql.*;
 import Logica.Proyecto.Proyecto;
-import Persistencia.Conexion;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
 
 public class CrudProyectos implements Cruds<Proyecto> {
 

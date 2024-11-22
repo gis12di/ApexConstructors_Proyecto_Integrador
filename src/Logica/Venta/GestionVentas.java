@@ -1,16 +1,17 @@
-// GestionVentas.java
 package Logica.Venta;
 
-import Persistencia.CrudVenta;
+import Logica.FactoryMethod.CreadorCrudVenta;
+import Logica.Interfaz.Cruds;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.util.List;
 
 public class GestionVentas {
-    private final CrudVenta crudVenta;
+    private final Cruds<Venta> crudVenta;
 
     public GestionVentas() {
-        this.crudVenta = new CrudVenta();
+        CreadorCrudVenta creador = new CreadorCrudVenta();
+        this.crudVenta = creador.crearCrud();
     }
 
     public List<Venta> obtenerVentas() {

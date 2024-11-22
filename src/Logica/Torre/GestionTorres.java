@@ -2,14 +2,16 @@ package Logica.Torre;
 
 
 // GestionTorres.java
-import Persistencia.CrudTorres; // Importa la clase CrudTorres para realizar operaciones CRUD en las torres
+import Logica.FactoryMethod.CreadorCrudTorres;
+import Logica.Interfaz.Cruds; 
 import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
 public class GestionTorres {
-    private CrudTorres crudTorres;// Instancia de CrudTorres para manejar operaciones CRUD
+    private final Cruds<Torre> crudTorres;// Instancia de CrudTorres para manejar operaciones CRUD
 
     public GestionTorres() {
-        this.crudTorres = new CrudTorres();//Constructor que inicializa la instancia de CrudTorres.
+        CreadorCrudTorres creador = new CreadorCrudTorres();
+        this.crudTorres = creador.crearCrud();//Constructor que inicializa la instancia de CrudTorres.
     }
 
     public void actualizarTorre(Torre torre) {// Actualiza una torre en la base de datos.

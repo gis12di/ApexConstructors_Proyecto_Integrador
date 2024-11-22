@@ -4,17 +4,21 @@
  */
 package Logica.FactoryMethod;
 
-import Logica.Cliente.Cliente;
+
+import Logica.Inmuebles.Inmueble;
 import Logica.Interfaz.Cruds;
-import Persistencia.CrudCliente;
+import Persistencia.CrudInmuebles;
+
 
 /**
  *
  * @author giset
  */
-public class CreadorCrudCliente extends CreadorCrud<Cliente>{
+public class CreadorCrudInmuebles extends CreadorCrud<Inmueble>{
+
     @Override
-    public Cruds<Cliente> crearCrud() {
-        return new CrudCliente();
+    public Cruds<Inmueble> crearCrud() {
+        return new CrudInmuebles();
     }
+    
 }
