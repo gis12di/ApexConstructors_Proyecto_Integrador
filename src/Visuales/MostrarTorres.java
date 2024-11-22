@@ -1,3 +1,4 @@
+import Logica.Inmuebles.GestionInmuebles;
 import Logica.Torre.GestionTorres;
 import Logica.Torre.Torre;
 import javax.swing.*;

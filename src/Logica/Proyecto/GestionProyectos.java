@@ -2,12 +2,13 @@ package Logica.Proyecto;
 
 import Logica.FactoryMethod.CreadorCrudProyectos;
 import Logica.Interfaz.Cruds;
+import Persistencia.CrudProyectos;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GestionProyectos {
-
+    
     private final Cruds<Proyecto> crudProyectos;
 
     public GestionProyectos() {
@@ -69,8 +70,13 @@ public class GestionProyectos {
         return resultado;
     }
     
-    // Método para obtener el código de un nuevo proyecto
     public String obtenerCodigoProyecto() {
-        return crudProyectos.obtenerCodigoProyecto();
+    if (crudProyectos instanceof CrudProyectos) {
+        return ((CrudProyectos) crudProyectos).obtenerCodigoProyecto();
+    } else {
+        throw new UnsupportedOperationException("El método obtenerCodigoProyecto no está disponible.");
     }
+}
+
+
 }

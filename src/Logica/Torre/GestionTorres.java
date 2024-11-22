@@ -4,6 +4,7 @@ package Logica.Torre;
 // GestionTorres.java
 import Logica.FactoryMethod.CreadorCrudTorres;
 import Logica.Interfaz.Cruds; 
+import Persistencia.CrudTorres;
 import java.util.List; // Importa la clase List para manejar colecciones de objetos
 
 public class GestionTorres {
@@ -24,14 +25,20 @@ public class GestionTorres {
         System.out.println("Torre eliminada correctamente.");
     }
 
-    public void guardarTorre(Torre torre) {//Guarda una nueva torre en la base de datos.
-        if (crudTorres.existeCodProyecto(torre.getCodProyecto())) {
-            crudTorres.guardar(torre);
-            System.out.println("Torre guardada correctamente.");
+        public void guardarTorre(Torre torre) {
+        if (crudTorres instanceof CrudTorres) { // Verifica que sea de tipo CrudTorres
+            CrudTorres crudTorresEspecifico = (CrudTorres) crudTorres; // Realiza el casting
+            if (crudTorresEspecifico.existeCodProyecto(torre.getCodProyecto())) {
+                crudTorres.guardar(torre);
+                System.out.println("Torre guardada correctamente.");
+            } else {
+                System.out.println("Error: El codProyecto no existe.");
+            }
         } else {
-            System.out.println("Error: El codProyecto no existe.");
+            System.out.println("Error: La operación no es compatible con esta implementación.");
         }
     }
+
 
     public List<Torre> obtenerTorresPorCodProyecto(String codProyecto) {//Obtiene una lista de torres por código de proyecto.
         return crudTorres.obtener(codProyecto);

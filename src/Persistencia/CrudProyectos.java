@@ -105,16 +105,26 @@ public class CrudProyectos implements Cruds<Proyecto> {
     // Método para obtener el código de un nuevo proyecto como String
     public String obtenerCodigoProyecto() {
         String codigoProyecto = null;
-        String sql = "{ CALL obtenerCodigoProyecto(?) }";
+        String sql = "{ ? = CALL obtenerCodigoProyecto() }"; // Llamada a la función PL/SQL
 
         try (Connection conn = Conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
+            // Registrar el parámetro de retorno de la función
+            stmt.registerOutParameter(1, Types.NUMERIC); // Ajusta el tipo según sea necesario
 
-            stmt.registerOutParameter(1, Types.VARCHAR); // Cambiado a VARCHAR para devolver como String
+            // Ejecutar la función
             stmt.execute();
 
-            codigoProyecto = stmt.getString(1);
+            // Obtener el resultado
+            int codigo = stmt.getInt(1);
+            if (!stmt.wasNull()) { // Verificar si el valor no es nulo
+                codigoProyecto = String.valueOf(codigo);
+                System.out.println("Código de proyecto generado: " + codigoProyecto);
+            } else {
+                System.err.println("El código obtenido fue NULL.");
+            }
 
         } catch (SQLException ex) {
+            System.err.println("Error al ejecutar la función obtenerCodigoProyecto: " + ex.getMessage());
             ex.printStackTrace();
         }
 

@@ -1,3 +1,4 @@
+import Logica.Proyecto.GestionProyectos;
 import Logica.Proyecto.Proyecto;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

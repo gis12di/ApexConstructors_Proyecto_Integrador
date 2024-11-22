@@ -1,3 +1,4 @@
+import Logica.Proyecto.GestionProyectos;
 import Logica.Proyecto.Proyecto; // Importa la clase Proyecto
 import javax.swing.*; // Importa las clases de javax.swing para la interfaz gráfica
 import javax.swing.table.DefaultTableModel; // Importa la clase DefaultTableModel para manejar el modelo de la tabla

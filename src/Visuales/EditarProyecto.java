@@ -1,4 +1,5 @@
 
+import Logica.Proyecto.GestionProyectos;
     import Logica.Proyecto.Proyecto;
     import javax.swing.*;
     import javax.swing.table.DefaultTableModel;

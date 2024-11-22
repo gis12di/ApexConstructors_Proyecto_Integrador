@@ -1,5 +1,8 @@
+import Logica.Inmuebles.GestionInmuebles;
 import Logica.Inmuebles.Inmueble;
+import Logica.Proyecto.GestionProyectos;
 import Logica.Proyecto.Proyecto;
+
 import Logica.Torre.Torre;
 import Persistencia.CrudTorres;
 import javax.swing.*;

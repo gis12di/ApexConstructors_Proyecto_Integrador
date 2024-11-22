@@ -1,3 +1,4 @@
+import Logica.Inmuebles.GestionInmuebles;
 import Logica.Inmuebles.Inmueble;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
