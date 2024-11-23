@@ -1,3 +1,6 @@
+import Logica.Venta.GestionVentas;
+import Logica.Venta.Venta;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
@@ -16,13 +19,15 @@ public class PanelVentas extends JPanel {
 
     private void abrirFormularioVenta() {
         JFrame ventana = new JFrame("Formulario de Venta");
-        ventana.setSize(500, 400);
-        ventana.setLayout(new GridLayout(10, 2, 10, 10));
+        ventana.setSize(500, 500);
+        ventana.setLayout(new GridLayout(11, 2, 10, 10));
+
+        GestionVentas gestionVentas = new GestionVentas();
 
         // Campos del formulario
         JLabel lblPrecioTotal = new JLabel("Precio Total:");
         JTextField txtPrecioTotal = new JTextField();
-        txtPrecioTotal.setEditable(false); // Solo editable después de seleccionar un inmueble.
+        txtPrecioTotal.setEditable(false);
 
         JLabel lblInmuebleSeleccionado = new JLabel("Inmueble Seleccionado:");
         JTextField txtInmuebleSeleccionado = new JTextField();
@@ -60,15 +65,13 @@ public class PanelVentas extends JPanel {
         JTextField txtExcedente = new JTextField();
         txtExcedente.setEditable(false);
 
-        txtInicial.addActionListener(e -> {
-            try {
-                double precioTotal = Double.parseDouble(txtPrecioTotal.getText());
-                double inicial = Double.parseDouble(txtInicial.getText());
-                txtExcedente.setText(String.valueOf(precioTotal - inicial));
-            } catch (NumberFormatException ex) {
-                txtExcedente.setText("Error");
-            }
-        });
+        // Actualizar excedente al cambiar el valor inicial
+        txtInicial.addCaretListener(e -> actualizarExcedente(txtPrecioTotal, txtInicial, txtExcedente));
+
+        // Botón "Guardar"
+        JButton btnGuardar = new JButton("Guardar");
+        btnGuardar.addActionListener(e -> guardarVenta(ventana, gestionVentas, txtPrecioTotal, txtInmuebleSeleccionado,
+                txtFechaVenta, txtMatricula, txtFechaEscritura, txtDocumento, txtCedulaAsesor, comboPagos, txtInicial, txtExcedente));
 
         // Agregar componentes
         ventana.add(lblPrecioTotal);
@@ -93,9 +96,6 @@ public class PanelVentas extends JPanel {
         ventana.add(txtInicial);
         ventana.add(lblExcedente);
         ventana.add(txtExcedente);
-
-        JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.addActionListener(e -> ventana.dispose());
         ventana.add(new JLabel());
         ventana.add(btnGuardar);
 
@@ -134,6 +134,54 @@ public class PanelVentas extends JPanel {
         // Mostrar el JFrame
         selector.setVisible(true);
     }
-   
 
+    private void actualizarExcedente(JTextField txtPrecioTotal, JTextField txtInicial, JTextField txtExcedente) {
+        try {
+            double precioTotal = Double.parseDouble(txtPrecioTotal.getText());
+            double inicial = Double.parseDouble(txtInicial.getText());
+            txtExcedente.setText(String.valueOf(precioTotal - inicial));
+        } catch (NumberFormatException ex) {
+            txtExcedente.setText("Error");
+        }
+    }
+
+    private void guardarVenta(JFrame ventana, GestionVentas gestionVentas, JTextField txtPrecioTotal,
+                              JTextField txtInmuebleSeleccionado, JTextField txtFechaVenta, JTextField txtMatricula,
+                              JTextField txtFechaEscritura, JTextField txtDocumento, JTextField txtCedulaAsesor,
+                              JComboBox<Integer> comboPagos, JTextField txtInicial, JTextField txtExcedente) {
+        try {
+            // Validar datos obligatorios
+            if (txtInmuebleSeleccionado.getText().isEmpty() || txtDocumento.getText().isEmpty() || txtCedulaAsesor.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(ventana, "Todos los campos obligatorios deben estar completos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear un objeto Venta
+            Venta venta = new Venta();
+            venta.setIdVenta(txtMatricula.getText());
+            venta.setPrecioTotal(Double.parseDouble(txtPrecioTotal.getText()));
+            venta.setFechaVenta(java.sql.Date.valueOf(txtFechaVenta.getText()));
+            venta.setMatricula(txtMatricula.getText());
+            venta.setFechaEscritura(java.sql.Date.valueOf(txtFechaEscritura.getText()));
+            venta.setIdInmueble(txtInmuebleSeleccionado.getText());
+            venta.setNumDocumentoCliente(txtDocumento.getText());
+            venta.setCedAsesor(txtCedulaAsesor.getText());
+            venta.setNumPago(comboPagos.getSelectedItem().toString());
+            venta.setValorInicial(Double.parseDouble(txtInicial.getText()));
+            venta.setExcedente(Double.parseDouble(txtExcedente.getText()));
+
+            // Guardar la venta usando GestionVentas
+            boolean guardado = gestionVentas.guardarVenta(venta, ventana);
+            if (guardado) {
+                JOptionPane.showMessageDialog(ventana, "Venta guardada exitosamente.");
+                ventana.dispose();
+            } else {
+                JOptionPane.showMessageDialog(ventana, "No se pudo guardar la venta.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(ventana, "Error en el formato de los números: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(ventana, "Error al guardar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
