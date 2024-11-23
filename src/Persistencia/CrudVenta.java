@@ -2,6 +2,7 @@ package Persistencia;
 
 import Logica.Interfaz.Cruds;
 import Logica.Venta.Venta;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,25 +12,30 @@ public class CrudVenta implements Cruds<Venta> {
     @Override
     public List<Venta> obtener(String criterio) {
         List<Venta> ventas = new ArrayList<>();
-        String sql = "SELECT * FROM venta";
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        String sql = "{? = call obtenerVentas}"; // Llamada a la función obtenerVentas
 
-            while (rs.next()) {
-                Venta venta = new Venta();
-                venta.setIdVenta(rs.getString("idventa"));
-                venta.setPrecioTotal(rs.getDouble("precio_total"));
-                venta.setFechaVenta(rs.getDate("fechaventa"));
-                venta.setMatricula(rs.getString("matricula"));
-                venta.setFechaEscritura(rs.getDate("fechaescritura"));
-                venta.setIdInmueble(rs.getString("idinmueble"));
-                venta.setNumDocumentoCliente(rs.getString("numdocumento"));
-                venta.setCedAsesor(rs.getString("cedasesor"));
-                venta.setNumPago(rs.getString("num_pago"));
-                venta.setValorInicial(rs.getDouble("valor_inicial"));
-                venta.setExcedente(rs.getDouble("excedente"));
-                ventas.add(venta);
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement cstmt = conn.prepareCall(sql)) {
+
+            cstmt.registerOutParameter(1, Types.REF_CURSOR); // Registrar el cursor de salida
+            cstmt.execute();
+
+            try (ResultSet rs = (ResultSet) cstmt.getObject(1)) {
+                while (rs.next()) {
+                    Venta venta = new Venta();
+                    venta.setIdVenta(rs.getString("idventa"));
+                    venta.setPrecioTotal(rs.getDouble("precio_total"));
+                    venta.setFechaVenta(rs.getDate("fechaventa"));
+                    venta.setMatricula(rs.getString("matricula"));
+                    venta.setFechaEscritura(rs.getDate("fechaescritura"));
+                    venta.setIdInmueble(rs.getString("idinmueble"));
+                    venta.setNumDocumentoCliente(rs.getString("numdocumento"));
+                    venta.setCedAsesor(rs.getString("cedasesor"));
+                    venta.setNumPago(rs.getString("num_pago"));
+                    venta.setValorInicial(rs.getDouble("valor_inicial"));
+                    venta.setExcedente(rs.getDouble("excedente"));
+                    ventas.add(venta);
+                }
             }
 
         } catch (SQLException e) {
@@ -40,22 +46,24 @@ public class CrudVenta implements Cruds<Venta> {
 
     @Override
     public boolean guardar(Venta venta) {
-        String sql = "INSERT INTO venta (idventa, precio_total, fechaventa, matricula, fechaescritura, idinmueble, numdocumento, cedasesor, num_pago, valor_inicial, excedente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "{call insertarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // Llamada al procedimiento insertarVenta
 
-            stmt.setString(1, venta.getIdVenta());
-            stmt.setDouble(2, venta.getPrecioTotal());
-            stmt.setDate(3, new java.sql.Date(venta.getFechaVenta().getTime()));
-            stmt.setString(4, venta.getMatricula());
-            stmt.setDate(5, new java.sql.Date(venta.getFechaEscritura().getTime()));
-            stmt.setString(6, venta.getIdInmueble());
-            stmt.setString(7, venta.getNumDocumentoCliente());
-            stmt.setString(8, venta.getCedAsesor());
-            stmt.setString(9, venta.getNumPago());
-            stmt.setDouble(10, venta.getValorInicial());
-            stmt.setDouble(11, venta.getExcedente());
-            stmt.executeUpdate();
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement cstmt = conn.prepareCall(sql)) {
+
+            cstmt.setString(1, venta.getIdVenta());
+            cstmt.setDouble(2, venta.getPrecioTotal());
+            cstmt.setDate(3, new java.sql.Date(venta.getFechaVenta().getTime()));
+            cstmt.setString(4, venta.getMatricula());
+            cstmt.setDate(5, new java.sql.Date(venta.getFechaEscritura().getTime()));
+            cstmt.setString(6, venta.getIdInmueble());
+            cstmt.setString(7, venta.getNumDocumentoCliente());
+            cstmt.setString(8, venta.getCedAsesor());
+            cstmt.setString(9, venta.getNumPago());
+            cstmt.setDouble(10, venta.getValorInicial());
+            cstmt.setDouble(11, venta.getExcedente());
+
+            cstmt.execute();
             return true;
 
         } catch (SQLException e) {
@@ -66,24 +74,25 @@ public class CrudVenta implements Cruds<Venta> {
 
     @Override
     public boolean actualizar(Venta venta) {
-        String sql = "UPDATE venta SET precio_total = ?, fechaventa = ?, matricula = ?, fechaescritura = ?, idinmueble = ?, numdocumento = ?, cedasesor = ?, num_pago = ?, valor_inicial = ?, excedente = ? WHERE idventa = ?";
+        String sql = "{call actualizarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // Llamada al procedimiento actualizarVenta
+
         try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement cstmt = conn.prepareCall(sql)) {
 
-            stmt.setDouble(1, venta.getPrecioTotal());
-            stmt.setDate(2, new java.sql.Date(venta.getFechaVenta().getTime()));
-            stmt.setString(3, venta.getMatricula());
-            stmt.setDate(4, new java.sql.Date(venta.getFechaEscritura().getTime()));
-            stmt.setString(5, venta.getIdInmueble());
-            stmt.setString(6, venta.getNumDocumentoCliente());
-            stmt.setString(7, venta.getCedAsesor());
-            stmt.setString(8, venta.getNumPago());
-            stmt.setDouble(9, venta.getValorInicial());
-            stmt.setDouble(10, venta.getExcedente());
-            stmt.setString(11, venta.getIdVenta());
+            cstmt.setString(1, venta.getIdVenta());
+            cstmt.setDouble(2, venta.getPrecioTotal());
+            cstmt.setDate(3, new java.sql.Date(venta.getFechaVenta().getTime()));
+            cstmt.setString(4, venta.getMatricula());
+            cstmt.setDate(5, new java.sql.Date(venta.getFechaEscritura().getTime()));
+            cstmt.setString(6, venta.getIdInmueble());
+            cstmt.setString(7, venta.getNumDocumentoCliente());
+            cstmt.setString(8, venta.getCedAsesor());
+            cstmt.setString(9, venta.getNumPago());
+            cstmt.setDouble(10, venta.getValorInicial());
+            cstmt.setDouble(11, venta.getExcedente());
 
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
+            cstmt.execute();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,13 +102,14 @@ public class CrudVenta implements Cruds<Venta> {
 
     @Override
     public boolean eliminar(String criterio) {
-        String sql = "DELETE FROM venta WHERE idventa = ?";
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "{call eliminarVenta(?)}"; // Llamada al procedimiento eliminarVenta
 
-            stmt.setString(1, criterio);
-            int rowsDeleted = stmt.executeUpdate();
-            return rowsDeleted > 0;
+        try (Connection conn = Conexion.getConnection();
+             CallableStatement cstmt = conn.prepareCall(sql)) {
+
+            cstmt.setString(1, criterio);
+            cstmt.execute();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
