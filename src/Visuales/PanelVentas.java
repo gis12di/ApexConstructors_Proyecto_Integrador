@@ -1,5 +1,7 @@
+package Visuales;
 import Logica.Venta.GestionVentas;
 import Logica.Venta.Venta;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

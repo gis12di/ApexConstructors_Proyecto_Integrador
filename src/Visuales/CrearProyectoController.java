@@ -1,3 +1,4 @@
+package Visuales;
 import Logica.Proyecto.GestionProyectos;
 import Logica.Proyecto.Proyecto;
 import javax.swing.JFrame;

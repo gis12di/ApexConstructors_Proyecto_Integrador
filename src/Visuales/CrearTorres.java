@@ -1,3 +1,4 @@
+package Visuales;
 import Logica.Torre.GestionTorres;
 import Logica.Torre.Torre;
 import javax.swing.*;

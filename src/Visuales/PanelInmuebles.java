@@ -1,3 +1,4 @@
+package Visuales;
 import Logica.Inmuebles.GestionInmuebles;
 import Logica.Inmuebles.Inmueble;
 import Logica.Proyecto.GestionProyectos;

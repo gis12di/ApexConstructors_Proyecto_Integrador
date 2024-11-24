@@ -1,3 +1,4 @@
+package Visuales;
 import Logica.Usuarios.Autenticacion;
 
 import javax.swing.*;
