@@ -46,24 +46,24 @@ public class GestionPago {
     public List<Pago> obtenerPagosVencidos() {
         LocalDate fechaActual = LocalDate.now(ZoneId.of("America/Bogota"));
         return crudPago.obtener("").stream()
-                .filter(p -> {
-                    LocalDate fechaPago = p.getFechaPago().toInstant()
-                                             .atZone(ZoneId.systemDefault())
-                                             .toLocalDate();
-                    return fechaPago.isBefore(fechaActual) && !"Pagado".equalsIgnoreCase(p.getEstadoPago());
-                })
-                .collect(Collectors.toList());
+            .filter(p -> {
+                LocalDate fechaPago = p.getFechaPago().toInstant()
+                                         .atZone(ZoneId.systemDefault())
+                                         .toLocalDate();
+                return fechaPago.isBefore(fechaActual) && !"Pagado".equalsIgnoreCase(p.getEstadoPago());
+            })
+            .collect(Collectors.toList());
     }
 
     public List<Pago> obtenerPagosPendientes() {
         LocalDate fechaActual = LocalDate.now(ZoneId.of("America/Bogota"));
         return crudPago.obtener("").stream()
-                .filter(p -> {
-                    LocalDate fechaPago = p.getFechaPago().toInstant()
-                                             .atZone(ZoneId.systemDefault())
-                                             .toLocalDate();
-                    return fechaPago.isAfter(fechaActual) && !"Pagado".equalsIgnoreCase(p.getEstadoPago());
-                })
-                .collect(Collectors.toList());
+            .filter(p -> {
+                LocalDate fechaPago = p.getFechaPago().toInstant()
+                                         .atZone(ZoneId.systemDefault())
+                                         .toLocalDate();
+                return fechaPago.isAfter(fechaActual) && !"Pagado".equalsIgnoreCase(p.getEstadoPago());
+            })
+            .collect(Collectors.toList());
     }
 }

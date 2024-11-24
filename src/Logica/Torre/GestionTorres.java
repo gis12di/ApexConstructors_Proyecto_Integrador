@@ -1,7 +1,5 @@
 package Logica.Torre;
 
-
-// GestionTorres.java
 import Logica.FactoryMethod.CreadorCrudTorres;
 import Logica.Interfaz.Cruds; 
 import Persistencia.CrudTorres;
