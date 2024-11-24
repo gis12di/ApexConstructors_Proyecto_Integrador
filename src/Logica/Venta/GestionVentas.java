@@ -19,12 +19,15 @@ public class GestionVentas {
     }
 
     public boolean guardarVenta(Venta venta, JFrame frame) {
-        if (venta.getIdVenta() == null || venta.getIdVenta().isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "El ID de la venta no puede estar vacío.");
-            return false;
+        boolean guardadoExitoso = crudVenta.guardar(venta);
+        if (guardadoExitoso) {
+            JOptionPane.showMessageDialog(frame, "Venta guardada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Error al guardar la venta.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        return crudVenta.guardar(venta);
+        return guardadoExitoso;
     }
+
 
     public boolean actualizarVenta(Venta venta) {
         return crudVenta.actualizar(venta);

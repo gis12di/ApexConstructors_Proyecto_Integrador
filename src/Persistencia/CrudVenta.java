@@ -39,42 +39,44 @@ public class CrudVenta implements Cruds<Venta> {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener ventas: " + e.getMessage());
         }
         return ventas;
     }
 
     @Override
     public boolean guardar(Venta venta) {
-        String sql = "{call insertarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // Llamada al procedimiento insertarVenta
+        String sql = "{call insertarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // Sin el idventa
 
         try (Connection conn = Conexion.getConnection();
              CallableStatement cstmt = conn.prepareCall(sql)) {
 
-            cstmt.setString(1, venta.getIdVenta());
-            cstmt.setDouble(2, venta.getPrecioTotal());
-            cstmt.setDate(3, new java.sql.Date(venta.getFechaVenta().getTime()));
-            cstmt.setString(4, venta.getMatricula());
-            cstmt.setDate(5, new java.sql.Date(venta.getFechaEscritura().getTime()));
-            cstmt.setString(6, venta.getIdInmueble());
-            cstmt.setString(7, venta.getNumDocumentoCliente());
-            cstmt.setString(8, venta.getCedAsesor());
-            cstmt.setString(9, venta.getNumPago());
-            cstmt.setDouble(10, venta.getValorInicial());
-            cstmt.setDouble(11, venta.getExcedente());
+            cstmt.setDouble(1, venta.getPrecioTotal());
+            cstmt.setDate(2, new java.sql.Date(venta.getFechaVenta().getTime()));
+            cstmt.setString(3, venta.getMatricula());
+            cstmt.setDate(4, new java.sql.Date(venta.getFechaEscritura().getTime()));
+            cstmt.setString(5, venta.getIdInmueble());
+            cstmt.setString(6, venta.getNumDocumentoCliente());
+            cstmt.setString(7, venta.getCedAsesor());
+            cstmt.setString(8, venta.getNumPago());
+            cstmt.setDouble(9, venta.getValorInicial());
+            cstmt.setDouble(10, venta.getExcedente());
 
             cstmt.execute();
             return true;
 
+        } catch (SQLTimeoutException e) {
+            System.err.println("Tiempo de espera agotado al intentar guardar la venta: " + e.getMessage());
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            System.err.println("Error de SQL al guardar la venta: " + e.getMessage());
         }
+        return false;
     }
+
 
     @Override
     public boolean actualizar(Venta venta) {
-        String sql = "{call actualizarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; // Llamada al procedimiento actualizarVenta
+        String sql = "{call actualizarVenta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
         try (Connection conn = Conexion.getConnection();
              CallableStatement cstmt = conn.prepareCall(sql)) {
@@ -95,14 +97,14 @@ public class CrudVenta implements Cruds<Venta> {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            System.err.println("Error al actualizar la venta: " + e.getMessage());
         }
+        return false;
     }
 
     @Override
     public boolean eliminar(String criterio) {
-        String sql = "{call eliminarVenta(?)}"; // Llamada al procedimiento eliminarVenta
+        String sql = "{call eliminarVenta(?)}";
 
         try (Connection conn = Conexion.getConnection();
              CallableStatement cstmt = conn.prepareCall(sql)) {
@@ -112,8 +114,8 @@ public class CrudVenta implements Cruds<Venta> {
             return true;
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            System.err.println("Error al eliminar la venta: " + e.getMessage());
         }
+        return false;
     }
 }

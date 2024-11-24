@@ -147,5 +147,10 @@ public class PanelInmuebles extends JPanel {
         }
         return 0;
     }
+    
+    public String getIdInmuebleSeleccionado() {
+        return inmuebleSeleccionado != null ? inmuebleSeleccionado.getId() : null;
+    }
+
 
 }
