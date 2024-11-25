@@ -2,6 +2,7 @@ package Logica.Pago;
 
 import Logica.FactoryMethod.CreadorCrudPago;
 import Logica.Interfaz.Cruds;
+import Persistencia.CrudPago;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import javax.swing.JFrame;
@@ -21,12 +22,18 @@ public class GestionPago {
         return crudPago.obtener(criterio);
     }
 
-    public boolean guardarPago(Pago pago, JFrame frame) {
-        if (pago.getIdPago() == null || pago.getIdPago().isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "El ID del pago no puede estar vacío.");
-            return false;
+    public boolean guardarPagos(List<Pago> pagos) {
+        CrudPago crudPago = new CrudPago();
+        
+        // Iterar sobre los pagos y llamar al CRUD para insertarlos
+        for (Pago pago : pagos) {
+            boolean resultado = crudPago.guardar(pago);
+            if (!resultado) {
+                return false;  // Si no se pudo insertar algún pago, devolvemos false
+            }
         }
-        return crudPago.guardar(pago);
+        
+        return true;  // Si todos los pagos se insertaron correctamente
     }
 
     public boolean actualizarPago(Pago pago) {
@@ -66,4 +73,5 @@ public class GestionPago {
             })
             .collect(Collectors.toList());
     }
+    
 }

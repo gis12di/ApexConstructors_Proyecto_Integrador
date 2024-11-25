@@ -1,4 +1,6 @@
 package Visuales;
+import Logica.Pago.GestionPago;
+import Logica.Pago.Pago;
 import Logica.Venta.GestionVentas;
 import Logica.Venta.Venta;
 
@@ -6,7 +8,13 @@ import Logica.Venta.Venta;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class PanelVentas extends JPanel {
@@ -28,6 +36,41 @@ public class PanelVentas extends JPanel {
         String[] columnas = {"ID Venta", "Precio Total", "Fecha Venta", "Matrícula", "Fecha Escritura", "ID Inmueble", "Documento Cliente", "Cédula Asesor", "Número de Pagos", "Valor Inicial", "Excedente"};
         modeloTabla = new DefaultTableModel(columnas, 0);
         tablaVentas = new JTable(modeloTabla);
+        
+        tablaVentas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    try {
+                        int fila = tablaVentas.getSelectedRow();
+                        if (fila != -1) {
+                            // Recuperar datos de la fila seleccionada
+                            String idVenta = modeloTabla.getValueAt(fila, 0).toString();
+                            double excedente = Double.parseDouble(modeloTabla.getValueAt(fila, 10).toString());
+                            int numPagos = Integer.parseInt(modeloTabla.getValueAt(fila, 8).toString());
+                            String idInmueble = modeloTabla.getValueAt(fila, 5).toString();
+                            String cedCliente = modeloTabla.getValueAt(fila, 6).toString();
+                            String cedAsesor = modeloTabla.getValueAt(fila, 7).toString();
+
+                            // Conversión de fecha
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            java.util.Date fechaVenta = sdf.parse(modeloTabla.getValueAt(fila, 2).toString());
+
+                            // Llamar al método generarPagos
+                            generarPagos(idVenta, excedente, numPagos, idInmueble, cedCliente, cedAsesor, fechaVenta);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(PanelVentas.this, 
+                            "Error al procesar la fila seleccionada: " + ex.getMessage(), 
+                            "Error", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
+
 
         // Cargar los datos de las ventas en la tabla
         cargarVentasEnTabla();
@@ -222,4 +265,46 @@ public class PanelVentas extends JPanel {
             txtExcedente.setText("Error");
         }
     }
+    
+    private void generarPagos(String idVenta, double excedente, int numPagos, String idInmueble, String cedCliente, String cedAsesor, java.util.Date fechaVenta) {
+        double valorPago = excedente / numPagos;
+        GestionPago gestionPago = new GestionPago();
+
+        try {
+            // Crear una lista de pagos
+            List<Pago> pagos = new ArrayList<>();
+
+            // Generar los pagos
+            for (int i = 1; i <= numPagos; i++) {
+                Pago pago = new Pago();
+                pago.setValorPago(valorPago);
+                pago.setIdInmueble(idInmueble);
+                pago.setCedCliente(cedCliente);
+                pago.setCedAsesor(cedAsesor);
+                pago.setIdVenta(idVenta);
+                pago.setEstadoPago("Pendiente");
+
+                // Calcular la fecha de vencimiento (sumar meses)
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaVenta);
+                cal.add(Calendar.MONTH, i); // Sumar `i` meses
+                pago.setFechaPago(cal.getTime());
+
+                // Añadir el pago a la lista
+                pagos.add(pago);
+            }
+
+            // Guardar los pagos en la base de datos
+            boolean exito = gestionPago.guardarPagos(pagos);
+            if (exito) {
+                JOptionPane.showMessageDialog(null, "Pagos generados exitosamente.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al generar los pagos.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar los pagos: " + ex.getMessage());
+        }
+    }
+
 }

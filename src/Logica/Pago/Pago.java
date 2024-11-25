@@ -11,6 +11,8 @@ public class Pago {
     private String cedAsesor;
     private String idVenta;
     private String estadoPago;
+    private int numPago;        // Número de este pago
+    private int numeroDePagos;  // Total de pagos
 
     // Getters y Setters
     public String getIdPago() { return idPago; }
@@ -36,4 +38,16 @@ public class Pago {
 
     public String getEstadoPago() { return estadoPago; }
     public void setEstadoPago(String estadoPago) { this.estadoPago = estadoPago; }
+
+    
+
+    // Getters y Setters para numPago
+    public int getNumPago() { return numPago; }
+    public void setNumPago(int numPago) { this.numPago = numPago; }
+
+    // Getters y Setters para numeroDePagos
+    public int getNumeroDePagos() { return numeroDePagos; }
+    public void setNumeroDePagos(int numeroDePagos) { this.numeroDePagos = numeroDePagos; }
+
 }
+

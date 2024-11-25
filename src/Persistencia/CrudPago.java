@@ -36,24 +36,58 @@ public class CrudPago implements Cruds<Pago> {
 
     @Override
     public boolean guardar(Pago pago) {
-        String sql = "INSERT INTO pago (idpago, valorpago, fechapago, idinmueble, cedCliente, cedasesor, idventa) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = Conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        CallableStatement stmt = null;
 
-            stmt.setString(1, pago.getIdPago());
-            stmt.setDouble(2, pago.getValorPago());
-            stmt.setDate(3, new java.sql.Date(pago.getFechaPago().getTime()));
-            stmt.setString(4, pago.getIdInmueble());
-            stmt.setString(5, pago.getCedCliente());
-            stmt.setString(6, pago.getCedAsesor());
-            stmt.setString(7, pago.getIdVenta());
+        try {
+            conn = Conexion.getConnection();
+            String query = "{call insertarPago(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+
+            stmt = conn.prepareCall(query);
+
+            // Establecer parámetros
+            stmt.setDouble(1, pago.getValorPago());
+            stmt.setDate(2, new java.sql.Date(pago.getFechaPago().getTime()));
+            stmt.setString(3, pago.getIdInmueble());
+            stmt.setString(4, pago.getCedCliente());
+            stmt.setString(5, pago.getCedAsesor());
+            stmt.setString(6, pago.getIdVenta());
+            stmt.setString(7, pago.getEstadoPago());
+            stmt.setDate(8, new java.sql.Date(pago.getFechaPago().getTime()));
+            stmt.setInt(9, pago.getNumPago());
+            stmt.setInt(10, pago.getNumeroDePagos());
+
+            // Imprimir en consola los valores que se están enviando
+            System.out.println("Insertando pago con los siguientes datos:");
+            System.out.println("Valor Pago: " + pago.getValorPago());
+            System.out.println("Fecha Pago: " + new java.sql.Date(pago.getFechaPago().getTime()));
+            System.out.println("ID Inmueble: " + pago.getIdInmueble());
+            System.out.println("Cédula Cliente: " + pago.getCedCliente());
+            System.out.println("Cédula Asesor: " + pago.getCedAsesor());
+            System.out.println("ID Venta: " + pago.getIdVenta());
+            System.out.println("Estado Pago: " + pago.getEstadoPago());
+            System.out.println("Fecha Vencimiento: " + new java.sql.Date(pago.getFechaPago().getTime()));
+            System.out.println("Número Pago: " + pago.getNumPago());
+            System.out.println("Número Total de Pagos: " + pago.getNumeroDePagos());
+
+            // Ejecutar la consulta
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return false;
     }
+
+
+    
 
     @Override
     public boolean actualizar(Pago pago) {
