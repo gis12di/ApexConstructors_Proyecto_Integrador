@@ -1,3 +1,4 @@
+
 package Persistencia;
 
 import Logica.Interfaz.Cruds;
@@ -110,26 +111,19 @@ public class CrudTorres implements Cruds<Torre> {
     }
 
 
-    public boolean existeCodProyecto(String codProyecto) {
-        if (codProyecto == null || codProyecto.isEmpty()) {
-            throw new IllegalArgumentException("El código del proyecto no puede ser nulo o vacío.");
-        }
-
-        String sql = "{call existeCodProyecto(?, ?)}"; // Llamada al nuevo procedimiento PL/SQL
-
+    public boolean existeCodProyecto(String codProyecto) {//Verifica si un código de proyecto existe en la base de datos.
         try (Connection con = Conexion.getConnection();
-             CallableStatement cstmt = con.prepareCall(sql)) {
+             PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM proyecto WHERE codigo = ?")) {
+             
+            stmt.setString(1, codProyecto);
+            ResultSet rs = stmt.executeQuery();
 
-            cstmt.setString(1, codProyecto);
-            cstmt.registerOutParameter(2, Types.INTEGER);
-            cstmt.execute();
-
-            int count = cstmt.getInt(2);
-            return count > 0;
-
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;// Retorna false si el código del proyecto no existe
     }
 }
